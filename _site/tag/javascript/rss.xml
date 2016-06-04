@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+   
+      <title>marcin-chwedczuk.github.io/</title>
+   
+   <link>https://marcin-chwedczuk.github.io/</link>
+   <description>A place where I can share my thoughts about programming</description>
+   <language>en-uk</language>
+   <managingEditor> marcin-chwedczuk</managingEditor>
+   <atom:link href="rss" rel="self" type="application/rss+xml" />
+   
+	<item>
+	  <title>Test post</title>
+	  <link>//the-businessman-and-fisherman</link>
+	  <author>marcin-chwedczuk</author>
+	  <pubDate>2014-08-12T12:18:00+02:00</pubDate>
+	  <guid>//the-businessman-and-fisherman</guid>
+	  <description><![CDATA[
+	     <p>This is title</p>
+
+<p>foo</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">alert</span><span class="p">(</span><span class="s1">'Hello, world!'</span><span class="p">);</span></code></pre></figure>
+
+
+	  ]]></description>
+	</item>
+
+
+</channel>
+</rss>
