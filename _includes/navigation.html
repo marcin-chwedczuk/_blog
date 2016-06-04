@@ -4,12 +4,20 @@
         <span class="hidden">Close</span>
     </a>
     <ul>
-        <li class="nav-home {% if page.current == 'home' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}">Home</a></li>
-        <li class="nav-about {% if page.current == 'about' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}about">About</a></li>
-        <li class="nav-fables {% if page.url contains 'fables' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}tag/fables">Fables</a></li>
-        <li class="nav-speeches {% if page.url contains 'speeches' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}tag/speeches">Speeches</a></li>
-        <li class="nav-fiction {% if page.url contains 'fiction' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}tag/fiction">Fiction</a></li>
-        <li class="nav-author {% if page.current == 'author' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}author/casper">Author</a></li>
+        <li class="nav-home {% if page.current == 'home' %} nav-current{% endif %}" role="presentation">
+            <a href="{{ site.baseurl }}">Home</a>
+        </li>
+        
+        <li class="nav-javascript {% if page.url contains 'javascript' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}tag/javascript">JavaScript</a></li>
+        <li class="nav-speeches {% if page.url contains 'java' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}tag/java">Java</a></li>
+
+        <!-- no C# posts right now
+        <li class="nav-fiction {% if page.url contains 'csharp' %} nav-current{% endif %}" role="presentation"><a href="{{ site.baseurl }}tag/csharp">C#</a></li>
+        -->
+
+        <li class="nav-author {% if page.current == 'author' %} nav-current{% endif %}" role="presentation">
+            <a href="{{ site.baseurl }}author/mc">Author</a>
+        </li>
     </ul>
     <a class="subscribe-button icon-feed" href="{{ site.baseurl }}feed.xml">Subscribe</a>
 </div>
