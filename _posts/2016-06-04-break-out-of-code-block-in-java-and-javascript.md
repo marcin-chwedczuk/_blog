@@ -33,10 +33,10 @@ OUTER_LOOP: for (var i = 0; i < 3; i++) {
 }
 {% endhighlight %}
 both programs will print:
-```
+{% highlight no-highlight %}
 0 x 0 = 0
 0 x 1 = 0
-```
+{% endhighlight %}
 
 TIP: You can use `continue` instead of `break` and it will work too.
 
@@ -62,11 +62,11 @@ public static void main(String[] args) {
 }
 {% endhighlight %}
 this program will print when run:
-```
+{% highlight no-highlight %}
 before outer
 before break
 after outer
-```
+{% endhighlight %}
 
 And similarly in JavaScript you can write:
 {% highlight js %}
@@ -82,4 +82,6 @@ console.log('after outer');
 Ability to break nested loops and to jump out of nested code blocks is not
 something that you do on everyday job, but once in a year it may become handy.
 
-Just remember to not overuse it: ![xkcd goto](//imgs.xkcd.com/comics/goto.png)
+Just remember to not overuse it (from [XKCD](https://xkcd.com/292/)):
+![xkcd goto](//imgs.xkcd.com/comics/goto.png)
+
