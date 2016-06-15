@@ -8,6 +8,7 @@ subclass: 'post tag-test tag-content'
 categories: 'mc'
 navigation: True
 logo: 'assets/images/home.png'
+disqus: true
 ---
 
 #### Binary vs Text Files

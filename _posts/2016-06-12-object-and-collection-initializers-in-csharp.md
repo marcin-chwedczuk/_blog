@@ -8,6 +8,7 @@ subclass: 'post tag-test tag-content'
 categories: 'mc'
 navigation: True
 logo: 'assets/images/home.png'
+disqus: true
 ---
 
 In this post I want to present a nice C# syntax sugar: object and collection
