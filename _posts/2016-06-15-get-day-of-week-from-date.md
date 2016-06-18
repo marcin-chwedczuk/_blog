@@ -8,6 +8,7 @@ subclass: 'post tag-test tag-content'
 categories: 'mc'
 navigation: True
 logo: 'assets/images/home.png'
+disqus: true
 ---
 
 Today we will try to solve the following problem:
