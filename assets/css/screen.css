@@ -54,7 +54,7 @@ hr {
 mark { background: #FF0; color: #000; }
 code, kbd, pre,
 samp { font-family: monospace, serif; font-size: 1em; }
-pre { white-space: pre-wrap; }
+pre { white-space: pre; }
 q { quotes: "\201C" "\201D" "\2018" "\2019"; }
 small { font-size: 80%; }
 sub, sup {
@@ -341,7 +341,7 @@ code, tt {
     padding: 1px 3px;
     font-family: Inconsolata, monospace, sans-serif;
     font-size: 0.85em;
-    white-space: pre-wrap;
+    white-space: pre;
     border: #E3EDF3 1px solid;
     background: #F7FAFB;
     border-radius: 2px;
@@ -364,7 +364,7 @@ pre {
 
 pre code, pre tt {
     font-size: inherit;
-    white-space: pre-wrap;
+    white-space: pre;
     background: transparent;
     border: none;
     padding: 0;
