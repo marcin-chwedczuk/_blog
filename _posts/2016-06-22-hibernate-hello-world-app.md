@@ -8,6 +8,7 @@ subclass: 'post tag-test tag-content'
 categories: 'mc'
 navigation: True
 logo: 'assets/images/home.png'
+disqus: true
 ---
 
 In this tutorial we'll create minimal application that will allow us 
