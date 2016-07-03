@@ -315,7 +315,7 @@ Smet % C = (N + 2*Smet) % C
 {% endhighlight %}
 or in more mathematical notation:
 {% highlight no-highlight %}
-> Smet = N + 2*Smet (mod C)
+Smet = N + 2*Smet (mod C)
 {% endhighlight %}
 We can transform this equation using modulo arithmetic into:
 {% highlight no-highlight %}
