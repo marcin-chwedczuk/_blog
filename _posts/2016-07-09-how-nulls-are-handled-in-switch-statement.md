@@ -115,6 +115,7 @@ null pointer exception
 null pointer exception
 {% endhighlight %}
 As we have seen it's not even possible to declare `case null` label.
+
 In Java until you are 100% sure that value will not contain `null` you must
 explicitly check for `null` before switch as in:
 {% highlight java %}
@@ -153,7 +154,7 @@ an expression that will be evaluated at runtime. To compare `case` label values 
 
 In JavaScript there is no problem with using `null` and even `undefined` as `case`
 labels. Only tricky thing is with `NaN`s because `NaN === NaN` yields `false`
-in JavaScript. This behaviour is enforced by IEEE 754 standard that describes floating point
+in JavaScript. This is enforced by IEEE 754 standard that describes floating point
 numbers representation and behaviour. 
 In other words we can use `NaN` as a `case` label but
 program will never enter block of code associated with that label. As a side note
@@ -198,7 +199,7 @@ values.forEach(function(value) {
             break;
         
         default:
-            console.log('defult');
+            console.log('default');
             break;
     }
 });
@@ -209,10 +210,10 @@ This program will write:
 "null"
 "empty string"
 "zero"
-"defult"
+"default"
 1
 "foo"
-"defult"
+"default"
 {% endhighlight %}
 Notice that `"default"` was printed for `NaN` value.
 
