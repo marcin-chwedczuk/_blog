@@ -29,9 +29,9 @@ You can use this Bash one-liner to check how it works:
 for i in {1..100}; do echo "$i"; sleep 0.3; done
 {% endhighlight %}
 
-It still happened from time to time that I press `Ctrl+S` while using
+It still happens from time to time that I press `Ctrl+S` while using
 Vim (old habits die hard), but now I just press `Ctrl+Q` and continue
-my work. So far I have never experienced real Vim freeze again.
+my work. So far I have never experienced a real Vim freeze again.
 
 ##### Note for Windows users
 Terminal scroll lock also works in Windows but there you use
