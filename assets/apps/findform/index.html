@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>find command builder</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <script src="js/app.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+</head>
+
+<body ng-controller="MainController as vm">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2><code>find</code> command builder</h2>
+                <br />
+                <form class="form-horizontal">
+
+                    <div class="form-group">
+                        <label for="directory" class="col-sm-2 control-label">directory</label>
+                        <div class="col-sm-10">
+                            <input ng-model="vm.data.directory" type="text" class="form-control" id="directory" placeholder="e.g. ~/foo. Uses current directory by default">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type" class="col-sm-2 control-label">file type</label>
+                        <div class="col-sm-10">
+                            <select ng-model="vm.data.fileType" id="type" class="form-control">
+                                <option value="">any</option>
+                                <option value="f">file</option>
+                                <option value="d">directory</option>
+                                <option value="l">symlink</option>
+                                <option value="b">block device</option>
+                                <option value="c">character device</option>
+                                <option value="p">named pipe</option>
+                                <option value="s">socket</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="namePattern" class="col-sm-2 control-label">file name</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input type="radio" ng-model="vm.data.nameMatchOpt" value="normal" checked="true"> matches
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" ng-model="vm.data.nameMatchOpt" value="not"> doesn't matches
+                            </label>
+                        </div>
+                        <hr>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <input ng-model="vm.data.namePattern" type="text" class="form-control" id="namePattern" placeholder="pattern e.g. *.java">
+                        </div>
+                        <hr>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="vm.data.nameIgnoreCase" type="checkbox"> case insensitive
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <p class="form-control-static">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <p>
+                                            Inside file name pattern you may use glob expressions:
+                                            <ul>
+                                                <li><code>*</code> - matches zero or more characters</li>
+                                                <li><code>?</code> - matches exactly one character</li>
+                                                <li><code>[abcd]</code> - matches any character in group</li>
+                                                <li><code>[^ab]</code> - matches any character that is NOT in group</li>
+                                                <li><code>[a-zA-Z]</code> - you may use character ranges inside <code>[]</code>
+                                            </ul>
+                                        </p>
+
+                                        <p>
+                                            You may separate several patterns using <code>|</code> e.g. <code>*.java|*.xml</code>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="size" class="col-sm-2 control-label">file size</label>
+
+                        <div class="col-sm-10">
+                            <div class="form-group row">
+                                <label for="size" class="col-sm-2 control-label">is equal</label>
+                                <div class="col-sm-3">
+                                    <input type="number" ng-model="vm.data.fileSizeEqual" class="form-control" name="size" id="size">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select ng-model="vm.data.fileSizeEqualUnit" name="size" class="form-control">
+                                        <option value="M">MB</option>
+                                        <option value="k">kB</option>
+                                        <option value="c">bytes</option>
+                                        <option value="G">GB</option>
+                                        <option value="w">words (2 byte)</option>
+                                        <option value="b">512 byte blocks</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <label for="minSize" class="col-sm-2 control-label">is bigger than</label>
+                                <div class="col-sm-3">
+                                    <input type="number" ng-model="vm.data.fileSizeBigger" class="form-control" name="minSize" id="minSize">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select ng-model="vm.data.fileSizeBiggerUnit" name="minSizeUnit" class="form-control">
+                                        <option value="M">MB</option>
+                                        <option value="k">kB</option>
+                                        <option value="c">bytes</option>
+                                        <option value="G">GB</option>
+                                        <option value="w">words (2 byte)</option>
+                                        <option value="b">512 byte blocks</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <label for="maxSize" class="col-sm-2 control-label">is smaller than</label>
+                                <div class="col-sm-3">
+                                    <input type="number" ng-model="vm.data.fileSizeSmaller" class="form-control" name="maxSize" id="maxSize">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select ng-model="vm.data.fileSizeSmallerUnit" name="maxSizeUnit" class="form-control">
+                                        <option value="M">MB</option>
+                                        <option value="k">kB</option>
+                                        <option value="c">bytes</option>
+                                        <option value="G">GB</option>
+                                        <option value="w">words (2 byte)</option>
+                                        <option value="b">512 byte blocks</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="user" class="col-sm-2 control-label">file</label>
+
+                        <div class="col-sm-10">
+                            <div class="form-group row">
+                                <label for="user" class="col-sm-2 control-label">is owned by</label>
+                                <div class="col-sm-6">
+                                    <input type="text" ng-model="vm.data.fileOwners" class="form-control" name="user" id="user" placeholder="e.g. root">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <div class="col-sm-offset-2 col-sm-6">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="vm.data.includeInvalidOwners" type="checkbox"> file has invalid owner (e.g. user account no longer exists)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <label for="group" class="col-sm-2 control-label">belongs to group</label>
+                                <div class="col-sm-6">
+                                    <input type="text" ng-model="vm.data.fileGroups" class="form-control" name="group" id="group" placeholder="e.g. users">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <div class="col-sm-offset-2 col-sm-6">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="vm.data.includeInvalidGroups" type="checkbox"> file has invalid group
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <p class="form-control-static">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        You may specify many users and groups here, for example: <code>root, joe, jenny</code>
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+
+
+
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="permissions" class="col-sm-2 control-label">file permissions</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input ng-model="vm.data.permMode" type="radio" name="permMatchMode" value="normal" checked="true"> are equal
+                            </label>
+                            <label class="radio-inline">
+                                <input ng-model="vm.data.permMode" type="radio" name="permMatchMode" value="not"> are not equal
+                            </label>
+                            <label class="radio-inline">
+                                <input ng-model="vm.data.permMode" type="radio" name="permMatchMode" value="atLeast"> are at least
+                            </label>
+                            <label class="radio-inline">
+                                <input ng-model="vm.data.permMode" type="radio" name="permMatchMode" value="common"> have a common bit with
+                            </label>
+                        </div>
+                        <hr>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <input ng-model="vm.data.perms" type="text" class="form-control" id="permissions" placeholder="octal permissions e.g. 755">
+                        </div>
+                        <hr>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <p class="form-control-static">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        Quick remainder:
+                                        <pre>
+ owner  |  group  |  others
+ r w x  |  r w x  |  r w x
+ 4 2 1  |  4 2 1  |  4 2 1
+</pre> Special modes:
+                                        <ul>
+                                            <li>setuid <code>4000</code></li>
+                                            <li>setgid <code>2000</code></li>
+                                            <li>set sticky bit <code>1000</code></li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="fileTime" class="col-sm-2 control-label">file</label>
+
+                        <div class="col-sm-7">
+                            <select ng-model="vm.data.timeMode" id="fileTime" class="form-control">
+                                <option value="a">was accessed (read)</option>
+                                <option value="m" selected>was modified (contents changed)</option>
+                                <option value="c">was changed (contents or metadata changed)
+                            </select>
+                        </div>
+                        <div class="col-sm-4"></div>
+
+                        <div class="col-sm-offset-2 col-sm-10" style="margin-top: 16px;">
+                            <div class="form-group row">
+                                <label for="timeExactly" class="col-sm-2 control-label">exactly</label>
+                                <div class="col-sm-3">
+                                    <input ng-model="vm.data.timeExact" class="form-control" type="text" name="timeExactly" id="timeExactly">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select ng-model="vm.data.timeExactUnit" name="timeExactlyUnit" class="form-control">
+                                        <option value="minutes">minutes</option>
+                                        <option value="hours">hours</option>
+                                        <option value="days" selected>days</option>
+                                    </select>
+                                </div>
+                                <p class="form-control-static">ago</p>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <label for="timeMin" class="col-sm-2 control-label">at least</label>
+                                <div class="col-sm-3">
+                                    <input ng-model="vm.data.timeEarlier" class="form-control" type="text" name="timeMin" id="timeMin">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select ng-model="vm.data.timeEarlierUnit" name="timeMinUnit" class="form-control">
+                                        <option value="minutes">minutes</option>
+                                        <option value="hours">hours</option>
+                                        <option value="days" selected>days</option>
+                                    </select>
+                                </div>
+                                <p class="form-control-static">ago</p>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="form-group row">
+                                <label for="timeMax" class="col-sm-2 control-label">but no more than</label>
+                                <div class="col-sm-3">
+                                    <input ng-model="vm.data.timeLater" class="form-control" type="text" name="timeMax" id="timeMax">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select ng-model="vm.data.timeLaterUnit" name="size" class="form-control">
+                                        <option value="minutes">minutes</option>
+                                        <option value="hours">hours</option>
+                                        <option value="days" selected>days</option>
+                                    </select>
+                                </div>
+                                <p class="form-control-static">ago</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxdepth" class="col-sm-2 control-label">search depth</label>
+
+                        <div class="col-sm-10">
+                            <div class="form-group row">
+                                <label for="maxdepth" class="col-sm-2 control-label">max depth</label>
+                                <div class="col-sm-8">
+                                    <input ng-model="vm.data.maxdepth" type="number"
+                                        class="form-control" id="maxdepth" placeholder="e.g. 8"></input>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+
+                                <label for="mindepth" class="col-sm-2 control-label">min depth</label>
+                                <div class="col-sm-8">
+                                    <input ng-model="vm.data.mindepth" type="number"
+                                        class="form-control" id="mindepth" placeholder="e.g. 2"></input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">for each found file do</label>
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="vm.data.doPrint" type="checkbox" name="doPrint" checked> -print (print file path)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="vm.data.doPrintZero" type="checkbox" name="doPrintZero"> -print0 (print file path terminated by <code>\0</code> character)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="vm.data.doDelete" type="checkbox" name="doDelete"> -delete (delete file) <span class="glyphicon glyphicon-alert text-danger"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="vm.data.doExec" type="checkbox" name="doExec"> -exec (execute command)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" style="margin-top: 16px;">
+                                    <div class="form-group row">
+                                        <label for="command" class="col-sm-3 control-label">command to execute</label>
+                                        <div class="col-sm-9">
+                                            <input ng-model="vm.data.doCommand" type="text" class="form-control" id="command" placeholder="e.g. rm {}">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input ng-model="vm.data.doConfirm" type="checkbox" name="doDelete"> confirm command before execution for each file (-exec only)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <p class="form-control-static">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <p>
+                                            When you specify command you must escape any shell special characters using single quotes (<code>'</code>) or backslash (<code>\</code>).
+                                        </p>
+
+                                        <p>
+                                            Inside command you may use <code>{}</code> as a placeholder that will be substitued by actual file name before command execution.
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">command line</label>
+                        <div class="col-sm-10">
+                            <pre id="commandText">{{vm.command}}</pre>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="pull-right">
+                                <button type="reset" ng-click="vm.reset()" class="btn btn-warning">
+                                    <span class="glyphicon glyphicon-alert"></span> reset
+                                </button>
+                                <button type="button" ng-click="vm.copyToClipboard()" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-copy"></span> copy to clipboard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div style="width: 100%; height: 160px;"></div>
+
+    <div style="position: fixed; bottom: 0px; width: 100%;">
+        <pre style="margin: 0; border: none; white-space: pre-wrap;">{{vm.command}}</pre>
+    </div>
+</body>
+
+</html>
