@@ -3,7 +3,7 @@ layout: post
 cover: 'assets/images/mc_cover2.jpg'
 title: Indexes in PostgreSQL database
 date:   2016-08-06 00:00:00
-tags: vim 
+tags: sql
 subclass: 'post tag-test tag-content'
 categories: 'mc'
 navigation: True

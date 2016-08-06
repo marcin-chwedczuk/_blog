@@ -15,6 +15,18 @@ case "$1" in
     bundle exec jekyll build
     ;;
 
+"publish")
+    BLOG_DIR=$(dirname "$0")
+    pushd "$BLOG_DIR"
+    COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+    pushd "$BLOG_DIR/_site"
+    git add -A
+    git commit -m "$COMMIT_MESSAGE"
+    git push origin master
+    popd; popd
+    echo "published"
+    ;;
+
 *)
     echo "blog: unknown option: $1" >&2
     exit 2
