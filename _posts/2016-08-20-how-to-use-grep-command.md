@@ -64,8 +64,8 @@ every file contained in the specified directory and it's subdirectories):
 {% highlight no-highlight %}
 $ tree grep_exercises/
 grep_exercises/
-  |-\- bar.txt
-  `-\- foo.txt
+  |-- bar.txt
+  `-- foo.txt
      
 $ grep -r foo grep_exercises/
 grep_exercises/bar.txt:foobar
