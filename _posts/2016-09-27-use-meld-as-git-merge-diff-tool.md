@@ -20,26 +20,26 @@ a nice and fresh looking GUI so I decided to give it a chance and replace my old
 Since git configuration of Meld isn't as straightforward as it should be,
 here are relevant parts of my `.gitconfig`:
 {% highlight no-highlight %}
-# ------------------ M E R G E ------------------------
 [merge]
-tool = meld
+    tool = meld
 
 [mergetool "meld"]
-   cmd = meld --diff \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\"
+    cmd = meld --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output \"$MERGED\" --label \"MERGE (REMOTE BASE MY)\"
+    trustExitCode = false
 
 [mergetool]
-# don't ask if we want to skip merge
-prompt = false
+    # don't ask if we want to skip merge
+    prompt = false
 
-# don't create backup *.orig files
-keepBackup = false
+    # don't create backup *.orig files
+    keepBackup = false
 
 # ------------------ D I F F -------------------------
 [diff]
     guitool = meld
 
 [difftool "meld"]
-    path = meld
+    cmd = meld \"$LOCAL\" \"$REMOTE\" --label \"DIFF (ORIGINAL MY)\"
 {% endhighlight %}
 You may edit your git config file by issuing `git config --global -e` command.
 Before making any changes remember to create a backup.
