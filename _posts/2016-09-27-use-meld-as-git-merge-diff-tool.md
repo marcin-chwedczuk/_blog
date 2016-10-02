@@ -20,6 +20,7 @@ a nice and fresh looking GUI so I decided to give it a chance and replace my old
 Since git configuration of Meld isn't as straightforward as it should be,
 here are relevant parts of my `.gitconfig`:
 {% highlight no-highlight %}
+# ------------------ M E R G E -------------------------
 [merge]
     tool = meld
 
