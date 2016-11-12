@@ -11,7 +11,7 @@ logo: 'assets/images/home.png'
 disqus: true
 ---
 
-When you start lerning Spring MVC development configuring
+When you start learning Spring MVC development configuring
 Tomcat server in Eclipse Neon IDE can be a difficult task.
 This tutorial will help you setup your development environment.
 
@@ -91,7 +91,7 @@ and optionally JRE (use Oracle Java 8 if available) and click Finish.
 #### There is no Tomcat 8.5 in my wizard (if you completed previous steps skip this secion)
 
 There is a bug in Eclipse that prevents some users from seeing
-Tomcat 8.5 option in thier wizards:
+Tomcat 8.5 option in their wizards:
 ![Tomcat Welcome screen](assets/images/2016-10-31/4_env_1.png)
 
 The solution is simple, we manually change Tomcat version number say
@@ -150,7 +150,7 @@ restart.
 We will create simple Spring MVC application to check if everything is working.
 Let's start by creating new Maven project (New Project -> Maven Project and check Create simple project):
 ![Tomcat Welcome screen](assets/images/2016-10-31/6_mvn.png)
-Don't forget to select WAR as packagin method.
+Don't forget to select WAR as packaging method.
 
 Open your POM file in XML editor and add following lines to it:
 {% highlight xml %}
