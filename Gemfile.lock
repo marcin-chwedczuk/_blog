@@ -131,7 +131,8 @@ DEPENDENCIES
   github-pages (~> 66)
   jekyll (~> 3.0.3)
   jekyll-paginate
+  jemoji
   rake (~> 10.1.1)
 
 BUNDLED WITH
-   1.12.5
+   1.13.5
