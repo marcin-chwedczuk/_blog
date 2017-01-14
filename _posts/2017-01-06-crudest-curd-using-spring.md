@@ -11,6 +11,11 @@ logo: 'assets/images/home.png'
 disqus: true
 ---
 
+EDIT: In this post I'll use Spring XML configuration, in new
+applications you should definitely use Spring JavaConfig configuration (via
+annotations and Java classes).
+For more info see reddit comment discussion [here](https://www.reddit.com/r/springsource/comments/5mjwa2/100_crudest_crud_using_spring_and_jdbc/).
+
 In this blog post we will create simple CRUD (Create Retrieve Update Delete)
 application using Spring and JDBC.
 Before we start we need to setup our database.
