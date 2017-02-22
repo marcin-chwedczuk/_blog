@@ -31,7 +31,7 @@ If you don't know what DI
 is or if you don't used it before please read articles on [Wikipedia](https://en.wikipedia.org/wiki/Dependency_injection) and [Martin Fowler site](https://martinfowler.com/articles/injection.html),
 and return here after you are comfortable with both idea and usage of DI.
 
-Now we are ready to start, we will follow Confucius advice:
+Now when we are ready to start, we will follow Confucius advice:
 
 > By three methods we may learn wisdom: First, by reflection, which is noblest;
 > Second, by imitation, which is easiest; 
@@ -41,24 +41,24 @@ Now we are ready to start, we will follow Confucius advice:
 
 and learn by imitation,
 by observing how we may unit test `UserService` component.
-We will use popular [jUnit](http://junit.org/junit4/) unit testing framework
+We will use popular [JUnit](http://junit.org/junit4/) unit testing framework
 with [Mockito](http://site.mockito.org/) mocking library.
 
 #### `UserService` component
 
 `UserService` implements following business requirements:
 
-* Users forgot thier passwords from time to time, application should
+* Users forgot their passwords from time to time, application should
  provide a way to reset forgotten passwords.
-* To reset thier passwords users must provide the email address they use
+* To reset their passwords users must provide email address they use
  to login to our system.
 * If provided email address does not belong to any user, application 
  should do nothing. Otherwise application should generate unique
- password reset token, set it validity to next 24 hours and send
+ password reset token and send
  to provided email address message with link to reset password form.
  Link should contain reset password token.
  In both cases application should show to user success message.
-* Every user should have each own token. Tokens should be hard to
+* Password reset tokens should be unique. Tokens should be hard to
  guess or enumerate (no numbers here). Token may be used only once
  to reset password. If we want to reset password again we need a new token.
  Token is valid for 24 hours starting from the date it was created, after 24
@@ -193,7 +193,7 @@ Design of `UserService` follows principles of DI, component advertises
 all dependencies it needs as constructor parameters.
 DI containers may then use [constructor based dependency injection](https://www.tutorialspoint.com/spring/constructor_based_dependency_injection.htm) to
 provide implementations of these dependencies.
-Right now we have only implementation of `UserService`, `UserRepository` and
+Right now we have only implemented `UserService`, `UserRepository` and
 other dependencies are not implemented yet.
 Nevertheless with usage of stubs and
 mocks we may test `UserService` implementation right now.
@@ -253,7 +253,7 @@ test cases to be sure that `startResetPasswordProcess` method works:
  newly generated token, and `LocalDateTime` instance that represent point
  in time 24 hours later than now.
 * When there is `User` with specified email address, component should send
- message to user using `NotificationService` with token.
+ message with token to user using `NotificationService`.
 
 Notice that each of these test cases test only single thing, this is
 very important if we want to have clean and independent tests.
@@ -275,7 +275,7 @@ will be the name of the method that we want to test.
 may expect when it is called. `outcome` is the state of the program
 that we expect after tested method returns.
 
-To give you a feeling how this naming schema works here
+To give you a feeling how this naming scheme works here
 are some dummy tests for Java `+` operator:
 {% highlight java %}
 void plusOperator_given1And5_returns6()
@@ -283,26 +283,26 @@ void plusOperator_given1AndMinus7_returnsMinus6()
 void plusOperator_whenResultIsGreaterThanMAXINT_wrapsResultsUsingMod2Arithmetic()
 {% endhighlight %}
 
-The second school took inspiration for thier naming schema from 
+The second school took inspiration for thier naming scheme from 
 [BDD](https://en.wikipedia.org/wiki/Behavior-driven_development)
 movement.
 This school advices that 
 test names should consists of full sentences that describe both
 conditions and outcome of tested method. 
 Names for `+` operator tests following this
-schema looks like:
+scheme looks like:
 {% highlight java %}
 void _1_plus_5_should_return_6()
 void _1_plus_minus_7_should_return_minus_6()
 void when_result_of_addition_is_greater_than_MAXINT_plus_operator_should_wrap_result_using_mod_2_arithmetic()
 {% endhighlight %}
 As you can see test names generated using this approach 
-can be quite verbose at times. Verbosity of this schema is great advantage 
+can be quite verbose at times. Verbosity of this schema is it great advantage 
 because the main purpose of test name is to tell you
 what exactly is not working when given test fails. 
 
 I prefer first school with scenario/conditions/outcome division of test name,
-so I will use it exclusivly in the rest of this post.
+so I will use it exclusively in the rest of this post.
 
 Returning to `startResetPasswordProcess` we should create three tests:
 {% highlight java %}
@@ -311,7 +311,7 @@ void startResetPasswordProcess_givenEmailOfExistingUser_generatesToken()
 void startResetPasswordProcess_givenEmailOfExistingUser_sendsNotificationToUser()
 {% endhighlight %}
 These test names are not as descriptive as they may be, but are close
-to what you may expect in average enterpraise application.
+to what you may expect in average enterprise application.
 
 ##### Anatomy of test method
 
@@ -373,7 +373,7 @@ different purpose. In Arrange part we must create instance of
 tested component and all necessary test data and
 also we must set up Mockito mocks.
 If we may compare test method to theater play, then Arrange is like 
-preparing scene, costiumes and lights.
+preparing scene, costumes and lights.
 
 The first four lines of our test Arrange section are responsible for
 creating dummy implementations of `UserServiceImpl` dependencies:
@@ -407,16 +407,16 @@ it consists of single line of code:
 userService.startResetPasswordProcess("unknown@example.com");
 {% endhighlight %}
 
-The last section in test method is Assert when we want to
+The last section in the test method is Assert when we want to
 check results produced by tested code. In our test we check two
 assumptions:
 
 1. Invocation of `startResetPasswordProcess` does not throw any exceptions.
- This is tested implicitly by jUnit - test fails when test method throwns
+ This is tested implicitly by JUnit - test fails when test method throwns
  exception. Since our test passes we are certain that `startResetPasswordProcess`
  doesn't throw any.
-2. We want to be ceratain that no notification was send to provided email address
- so we asses with help of Mockit that none of the methods on `NotificationService`
+2. We want to be certain that no notification was send to provided email address
+ so we asses with the help of Mockit that none of the methods on `NotificationService`
  was called.
 
 Mockito verification syntax is a bit unintuitive, so let's take a closer
@@ -440,10 +440,10 @@ method was called twice.
 #### Testing with assertions
 
 Our first test assured us that `startResetPasswordProcess` works correctly
-when given email address of unknown user. Now it is time to check if
+with email address of unknown user. Now it is time to check if
 it also works correctly given email addresses of existing user.
 Our second test will check if given valid email address `UserServiceImpl`
-generates a new token for `User` and sets it exiry date correctly.
+generates a new token for `User` and sets it expiry date correctly.
 We also will check that user password is not altered in any way by
 starting reset password process (it should change only when we *finish*
 password change process).
@@ -490,10 +490,10 @@ public void startResetPasswordProcess_givenEmailOfExistingUser_generatesToken() 
 	   .isEqualTo("old-password-hash");
 }
 {% endhighlight %}
-Arrange section of our second test does not differe much from Arrange
+Arrange section of our second test does not differ much from Arrange
 section of our first test, except that we added code for creation
-of an `User` instance. Notice that we populate `User` with carefuly 
-choosen data that will allow us to test `startResetPasswordProcess`
+of an `User` instance. Notice that we populate `User` with carefully 
+chosen data that will allow us to test `startResetPasswordProcess`
 implementation easily e.g. we set both `resetPasswordToken` and
 `resetPasswordTokenValidityEndDate` to `null`.
 Then we instruct Mockito to return our `User` instance when we
@@ -578,7 +578,7 @@ java.lang.AssertionError: Password should not be changed
 #### Merciless refactoring
 
 Right now both of our tests pass, but we see a lot of code duplication
-between them. Now it is a good time to exctract common parts of both
+between them. Now it is a good time to extract common parts of both
 tests into `setUp` method and to create some fields in our test class:
 {% highlight java %}
 public class UserServiceImplTestAfterRefactoring {
@@ -647,7 +647,7 @@ public class UserServiceImplTestAfterRefactoring {
     }
 }
 {% endhighlight %}
-After refacting both dependencies and tested components are
+After refactoring both dependencies and tested components are
 now stored in fields of test class. 
 JUnit calls any method annotated by `@Before` before executing each
 of test methods contained in test class. 
@@ -660,14 +660,92 @@ each other. One of the worst sins when writing unit tests is to write
 a test that depends on some data created by other test methods. 
 Such incorrect test may pass when we ran all tests but will
 fail when run it alone. This is one of the worst things that may happen
-when writing unit tests, and cleary shows that we do something wrong.
+when writing unit tests, and clearly shows that we do something wrong.
 Instead every test should create it's own test data and should use 
-fresh Mockito stubs. Later you will appreaciate this independence of
+fresh Mockito stubs. Later you will appreciate this independence of
 tests when you will try to run tests in parallel.
 
+Unit tests often require some dummy data, instead of creating the
+same object again and again in various tests we should group them
+into library of test objects. Such library of test data is often called
+a fixture. Since I expected that we will need `User` instance in other
+test, I extracted code that created dummy user into `Fixtures` class:
+{% highlight java %}
+public class Fixtures {
+   public static User userJoe() {
+	  User joe = new User();
 
-TODO: Stubs and mocks
+	  joe.setEmail("joe@example.com");
+	  joe.setPasswordHash("old-password-hash");
+	  joe.setResetPasswordToken(null);
+	  joe.setResetPasswordTokenValidityEndDate(null);
 
-TODO: Refactoring, extracting common code
+	  return joe;
+   }
+}
+{% endhighlight %}
 
-TODO: Code coverage
+##### Terminology
+
+When reading about unit testing you may encounter terms *fake*, *mock* and *stub*.
+Fake is any object that is used only by test code, fake may be implemented as
+concrete class like `UserRepositoryStub` or as anonymous class generated at runtime.
+In this last category we find all dummy implementations generated by Mockito.
+
+Fakes can be divided into two groups stubs and mocks. Form practical point of
+view we use mock to test interactions, and stubs to provide dummy data or
+do-nothing implementation. We used `NotificationService` as a mock in our first
+test because we used it to assert that no interaction took place (no message was
+send to user). On the other hand all dummy implementations generated
+by Mockito for `UserRepository`, `DateTimeProvider` etc. are examples of stubs.
+
+More information about difference between mocks and stubs
+can be found in Martin Fowler article
+[Mocks aren't stubs](https://www.martinfowler.com/articles/mocksArentStubs.html).
+
+##### Code coverage
+
+When unit testing it is important to test all execution paths in our code.
+Sometimes we may be convinced that we covered all corner cases only to
+find out (usually in production) that we overlooked testing some obscure conditions.
+In such situation after fixing bug, we should add missing test.
+But we could do better, almost any popular Java IDE can measure
+and show us code coverage of tested component. IDE can usually highlight
+in red lines that were not tested, for example here how it looks like in IntelliJ:
+![Code coverage in IntelliJ](assets/images/2017-02-19/code_cov.png)
+Greenish bar next to line number tells us that line of code was *executed*
+when running unit tests (being executed doesn't automatically mean that
+the line of code is well tested, it is only a heuristic). On the other hand 
+red bar tells that lines of code was not reached by tests and certainly is not tested.
+
+When we are at it, you may heard that the higher code coverage the better.
+Having 100% code coverage is impossible in any reasonable sized enterprise application.
+There is an ongoing debate about how much code coverage is enough.
+For me code coverage is just a tool that I use to check that I tested
+all execution paths in code and nothing more.
+
+##### It's your turn now
+
+Right now we have only two tests for our `UserServiceImpl` component,
+of course it is not enough to assure us that all of the business requirements
+were fulfilled. When I tested `UserServiceImpl` I wrote seven more tests:
+
+* `startResetPasswordProcess_givenEmailOfExistingUser_sendsNotificationToUser`
+* `finishResetPasswordProcess_noUserHasSpecifiedEmail_doesNothing`
+* `finishResetPasswordProcess_userHasNoTokenSet_doesNothing`
+* `finishResetPasswordProcess_tokenExpired_doesNothing`
+* `finishResetPasswordProcess_tokenNotMatch_doesNothing`
+* `finishResetPasswordProcess_validToken_changesPassword`
+* `finishResetPasswordProcess_validToken_sendsConfirmationToUser`
+
+and only now I am certain that `UserServiceImpl` works correctly.
+
+You may find source code for all these tests (with other goodies)
+[HERE](https://github.com/marcin-chwedczuk/mockito-unit-test-demo).
+But before you look at what I wrote, please try to implement these tests
+yourself and then compare your code with mine. I am certain that you will
+learn more this way.
+
+Thanks for reading. If you liked this post please start my Github repository.
+And see you soon again!
+
