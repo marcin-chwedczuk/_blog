@@ -35,7 +35,7 @@ strings.stream()
 
 * You should `import static` all of the standard 
  stream related methods. This will make code shorter, 
- easier to read and easier understand by removing all 
+ easier to read and easier to understand by removing all 
  unnecessary visual noise.
 {% highlight java %}
 // BAD CODE:
@@ -51,7 +51,7 @@ strings.stream()
 	.collect(toMap(identity(), String::length));
 {% endhighlight %}
 
-* You should prefer method references to lambdas
+* You should prefer method references to lambdas.
 {% highlight java %}
 // AVOID:
 strings.stream()
@@ -76,6 +76,30 @@ private static Integer lambda$main$0(String s) {
 {% endhighlight %}
 Method references are compiled to only `invokedynamic` instruction.
 
+* You should use methods from `Class<T>` to filter stream elements by a type
+ and to cast stream elements to a type.
+{% highlight java %}
+Stream<Object> objects = Stream.of(
+	"a string",
+	42,
+	new String[] { "an array" },
+	"another string");
+
+List<String> strings = objects
+	.filter(String.class::isInstance)
+	.map(String.class::cast)
+	.collect(toList());
+{% endhighlight %}
+Also rember that `Class<T>::isInstance` only checks if 
+the value can be assigned to a variable of type `T`. For example
+`Object.class.isInstance("foo")` returns `true` because string
+`"foo"` can be assigned to a variable of type `Object`.
+If you want to check that stream elements have exactly type `T`
+you must use expression:
+{% highlight java %}
+.filter(x -> (x != null) && x.getClass().equals(T.class))
+{% endhighlight %}
+
 * Give meaningful names to frequently used collector expressions.
  In most cases this means extracting collector expression into
  its own method.
@@ -97,7 +121,7 @@ private static class ExtraCollectors {
 You may also consider using static import for your own frequently
 used collectors.
 
-* Use the following pattern when you sort stream values at hoc
+* Use the following pattern when you sort stream values at hoc:
 {% highlight java %}
 List<Student> result = students.stream()
 	.sorted(
@@ -111,6 +135,47 @@ List<Student> result = students.stream()
 Notice how we used `reverseOrder()` to reverse order of sorting
 by name and id. Also bear in mind that it is always a good idea
 to extract complicated comparers to its own method or a final field.
+
+* Use `IntStream`, `LongStream` and `DoubleStream` when working with
+ primitive types. They are faster (they avoid boxing) and easier to
+ use (they add useful methods like `sum`).
+{% highlight java %}
+Stream<String> strings = Stream.of("a", "foo", "bar", "baz");
+
+double averageLength = strings
+		.mapToInt(String::length)
+		.summaryStatistics()
+		.getAverage();
+{% endhighlight %}
+Use `mapTo[Int|Long|Double]` and `mapToObj` to convert 
+between a stream and a specialized primitive stream.
+
+Also learn about static helper methods exposed by specialized stream
+classes:
+{% highlight java %}
+// prints: 0 1 2 3 4 5 6 7 8 9
+IntStream.range(0, 10)
+	.forEach(System.out::println);
+
+// prints: 1 2 4 8 16 32 64 128 256 512
+IntStream.iterate(1, i -> 2*i)
+	.limit(10)
+	.forEach(System.out::println);
+
+ThreadLocalRandom random = ThreadLocalRandom.current();
+
+// prints: -376368599 2112239618
+// just to demo generate method:
+IntStream.generate(random::nextInt)
+	.limit(2)
+	.forEach(System.out::println);
+
+// prints: -1134353240 2007034835
+// stream of random int's - more idiomatic way:
+random.ints()
+	.limit(2)
+	.forEach(System.out::println);
+{% endhighlight %}
 
 * Avoid using `peek()`.
  Try to make your streams free of side-effects.
