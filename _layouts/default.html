@@ -26,6 +26,10 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 
+    {% if page.mathjax %}
+        <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    {% endif %}
+
     <!-- [[! Ghost outputs important style and meta data with this tag ]] -->
     {% include head.html %}
 
