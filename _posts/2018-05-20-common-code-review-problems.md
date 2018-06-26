@@ -9,6 +9,7 @@ categories: 'mc'
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true
+published: false
 ---
 
 WARNING: WORK IN PROGRESS
