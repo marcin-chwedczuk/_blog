@@ -145,7 +145,7 @@ c_4 = (d_x^2 + d_y^2 + d_z^2)^2 \\
 c_3 = 4 (d_x^2 + d_y^2 + d_z^2) (o_x d_x + o_y d_y + o_z d_z) \\
 c_2 = 2 (d_x^2 + d_y^2 + d_z^2) (o_x^2 + o_y^2 + o_z^2 - (r^2 + R^2)) + 4 (o_x d_x + o_y d_y + o_z d_z)^2 + 4 R^2 d_y^2 \\
 c_1 = 4 (o_x^2 + o_y^2 + o_z^2 - (r^2 + R^2)) (o_x d_x + o_y d_y + o_z d_z) + 8 R^2 o_y d_y \\
-c_0 = 4 (o_x^2 + o_y^2 + o_z^2 - (r^2 + R^2))^2 - 4 R^2 (r^2 - o_y^2)
+c_0 = (o_x^2 + o_y^2 + o_z^2 - (r^2 + R^2))^2 - 4 R^2 (r^2 - o_y^2)
 \end{cases}
 $$
 
@@ -188,6 +188,11 @@ code of the solver then.
  If you need huge tori in your scenes please use
  ray transformation technique described in point (1) to scale 
  small tori as needed.
+
+3. From performance point of view rendering a torus by solving its equation
+ is slow. Rendering may be speed up considerably if we manage to avoid
+ solving the equation altogether e.g. by using 
+ [triangle meshes](https://en.wikipedia.org/wiki/Triangle_mesh).
 
 #### Source code
 
