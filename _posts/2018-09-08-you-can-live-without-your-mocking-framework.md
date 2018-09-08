@@ -18,7 +18,7 @@ These libraries seems indispensable while unit-testing.
 They allow us to easily generate subs and mocks and assert that
 certain interaction between components took place.
 
-NOTE: If you do not remember difference between stub and mock,
+NOTE: If you do not remember difference between stub and mock
 please read [this Martin Fowler article](https://martinfowler.com/articles/mocksArentStubs.html). 
 In short mocks are used to test interactions between components 
 (a method was called, a property was set) 
@@ -39,12 +39,12 @@ And second they can be used as stubs and mocks in unit-tests.
 Of course this idea seemed a bit extreme to me, so I decided to go with
 a bit more evolutionary approach.
 I **slowly** replaced all mock object that I had in my unit-tests 
-with fakes (I put all fakes in my unit test projects - but I am still thinking that maybe they deserve a project of thier own). 
+with fakes (I put all fakes in my unit test projects - but I am still thinking that maybe they deserve a project of their own). 
 During this process all interaction testing assertions 
 that are usually performed using mocking frameworks
 were replaced by behaviour testing assertions on fake objects.
 
-It will be the best to ilustrate this process using an example.
+It will be the best to illustrate this process using an example.
 Say we have a simple component `EventPublishingComponent` that
 publishes two events (order is not important):
 {% highlight csharp %}
@@ -124,7 +124,7 @@ await _eventPublisher
     .Publish(Arg.Do<FirstEvent>(e => firstEvent = e));
 {% endhighlight %}
 In the assert (then) part of the test we use again library specific
-sytnax to check that a method on a mock 
+syntax to check that a method on a mock 
 was called with given set of arguments.
 
 This approach is fine but it has some disadvantages:
@@ -141,15 +141,16 @@ This approach is fine but it has some disadvantages:
 
 2. Mocking library is another tool that you must learn. 
  And please remember that most of the developers are not too eager to
- read documentation. Time presumably saved by using mocking libary 
- will be lost on reading stackoverflow answers and on fighting with
+ read documentation. Time presumably saved by using mocking library 
+ will be lost on reading StackOverflow answers and on fighting with
  the library itself 
  (ever have a problem that your stub does not return intended value?). 
 
 3. It makes your tests less readable. I must admit that 
  NSubstitute is a huge improvement over Moq in terms
- of readablity but it still introduces a lot of visiual noise in the test
- code. For example see all those `<`, `>`, `(` and `)` in the code below:
+ of readability but it still introduces a lot of visual noise in the test
+ code. For example do see all 
+ those `<`, `>`, `(` and `)` in the code below:
 
 {% highlight csharp %}
 FirstEvent firstEvent = null;
@@ -157,7 +158,7 @@ await _eventPublisher
     .Publish(Arg.Do<FirstEvent>(e => firstEvent = e));
 {% endhighlight %}
 
-Now let us see how our test can look like if we use fakes:
+Now let us see how our test can look like if we use fakes instead:
 {% highlight csharp %}
 public class EventPublishingComponentTest_UsingFakes {
     private readonly InMemoryEventPublisher _eventPublisher;
@@ -399,12 +400,13 @@ logger.LogDebug("User '{userName}' log into application.", "root");
 
 Check.That(logger.LoggedEntries)
     .HasElementThatMatches(x => 
+        x.Level == LogLevel.Debug &&
         x.Message == "User 'root' log into application.");
 {% endhighlight %}
 Wow! Test is short, readable and simple. Exactly what I was looking for.
 
 I hope that this blog post persuaded you to start using fakes in your
-unit test. At least you now know that you have a good alternative to
+unit tests. At least you now know that you have a good alternative to
 mocking frameworks.
 
 Sample source code (with a bit more complicated example): 
