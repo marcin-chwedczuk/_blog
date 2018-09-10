@@ -122,17 +122,73 @@ public class OrderService {
 }
 {% endhighlight %}
 
-- Thin abstraction over DbSet
-- With EF Core InMemeoryDatabase testing is easy
-- Explicit transaction management (disables optimization done by orm), can break someone elses code when performing complex operations (data import).
+This *looks* nice and clean but is not. I will tell you more about why
+this is wrong later. Now I want to deal with one "solution" to the
+`GenericRepository<T>` misinterpretation that 
+I often hear from other developers. 
+This solution sounds like this (dialog during code-review):
 
-TODO: Why using raw DbSet is not the best option:
+JIM SENIOR: Have you ever heard that
+NHibernate `ISession` or Entity Framework `DbSet` *is a* repository?
+Indeed what you just created is a tin wrapper over either 
+`ISession` or `DbSet`.
+Actually we can replace this `GenericRepository<T>` by e.g.
+`DbSet` and get pretty must the same results.
+The only service that `IGenericRepository<T>` provides is that it hides
+most of the thirty methods that `DbSet` has. 
+JONNY JUNIOR: Oh, indeed what you just said make sense.
+I guess using generic repository
+pattern here was a bit of overengineering. (Happily gets back to coding...)
+
+For me using either `GenericRepository<T>` or raw `DbSet` is wrong most of the
+time (one exception that I can accept is when you write 
+the most CRUDest application ever, then don't botter
+and use `DbSet` in your services). And why? Due to the following reasons:
+
+- The only option to make sure that your LINQ queries will be properly translated
+ to SQL is to test them against **the same** kind of database that you use 
+ in production environment. But when your queries are scattered over methods 
+ of your services it may be hard to create integration tests for them.
+ For example look at the code:
+
+{% highlight csharp %}
+if (/* some complicated condition */) {
+	if (/* some other complicated condition */) {
+		 var result = _orderRepository.GetAll()
+			  .Where(order => order.AssignedTo.Id == _currentUser.Id)
+			  .Where(order => order.State != OrderState.Closed)
+			  .OrderByDescending(order => order.CreationDate)
+			  .Take(10)
+			  .ToList(); 
+
+		 return _mapper.MapTo<NewestOrderDto>(newestOrders);
+	}
+	// some code here
+}
+// more code here
+{% endhighlight %}
+
+To execute above query you must fulfill two if's conditions. This will make
+an integration test for the above query less readable and more fragile. 
+Instead imagine that this query is enapsulated by a repository method.
+In integration test you would just call that repo method and check the 
+results - simple isn't it?
+
+- I am sure that you agree with me 
+ that inline LINQ queries inside services 
+ are not reusable and that they have a nasty tendency to
+ duplicate themselves over the codebase. Even when a programmer decides to
+ extract query to it's own method it will be usually a private method on 
+ a particular service. Moving queries to repository 
+ methods makes them automatically reusable
+ across command handlers and services. 
+
+
+
+TODO TODO TODO TODO
 
 - Inline named queries that are difficult to understand (variable name may be a good or bad suggestion - when it was not updated). Query logic is copied in multiple places. 
 - Diff. levels of abstraction for some queries you will want to use SQL.
-- Queries can only be reliably tested by integration tests with real database.
- Do not use SQLite if you use Postgres on production, run tests on the same DB
- type that you use on PROD. You don't want to integration-test everything (integs are slow)
 - Breaks interface segregation principle (some operations like delete should not be exposed for some aggregates because we have soft delete). Can read any entity, manage transactions etc.
 
 ### What we need is the "specific" repository pattern
