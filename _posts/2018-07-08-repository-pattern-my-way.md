@@ -142,7 +142,7 @@ pattern here was a bit of overengineering. (Happily gets back to coding...)
 
 For me using either `GenericRepository<T>` or raw `DbSet` is wrong most of the
 time (one exception that I can accept is when you write 
-the most CRUDest application ever, then don't botter
+the most CRUDest application ever, then don't bother
 and use `DbSet` in your services). And why? Due to the following reasons:
 
 - The only option to make sure that your LINQ queries will be properly translated
@@ -178,21 +178,80 @@ results - simple isn't it?
  that inline LINQ queries inside services 
  are not reusable and that they have a nasty tendency to
  duplicate themselves over the codebase. Even when a programmer decides to
- extract query to it's own method it will be usually a private method on 
+ extract query to it's own method, it will usually be a private method on 
  a particular service. Moving queries to repository 
  methods makes them automatically reusable
- across command handlers and services. 
+ across entire application. 
 
+- Inline LINQ queries are not named. Usually the only clue what a particular
+ query does (without going deep it's logic) is the name of the variable that
+ holds query result. Unfortunately for us inventing a good variable names is a skill
+ that only comes with the experience and since we have a lot of junior devs in our 
+ industry we are faced with names like `result`, `ordersToProcess` or just `orders`.
+ Wrapping the query inside a repo method will automatically give it a name. 
+ Even if this name is not perfect we can refactor it later and all places 
+ that call this metod will benefit from our refactoring automatically!
 
+- Sometimes for performance reasons we are forced to use raw SQL to get our
+ data from DB. Do you really want to litter your business logic with low
+ level technicall stuff like `DbConnection`s, query parameters and `SqlException`s?
+ Let's hide this low level stuff inside repository and let our business code 
+ concentrate on business logic. Also see 
+ [Single level of abstraction principle](http://principles-wiki.net/principles:single_level_of_abstraction).
 
-TODO TODO TODO TODO
-
-- Inline named queries that are difficult to understand (variable name may be a good or bad suggestion - when it was not updated). Query logic is copied in multiple places. 
-- Diff. levels of abstraction for some queries you will want to use SQL.
-- Breaks interface segregation principle (some operations like delete should not be exposed for some aggregates because we have soft delete). Can read any entity, manage transactions etc.
+So what is the solution you may ask? Get ready...
 
 ### What we need is the "specific" repository pattern
 
+We should start repository design by specifying it's interface. 
+The interface should contain only methods required by clients of 
+the repository. In other words if nobody needs to delete a given entity
+we will not create `Delete` method on the interface.
+
+If you are afraid that you will end up with different names for
+basic CRUD operations like `Delete` on one repo and `Remove` on the other
+you may create helper interfaces like `ICanDeleteEntity<TEntity>`,
+`ICanUpdateEntity<TEntity>` etc. that will contain only methods for
+specific usage like deleting, updating etc. Then you make sure that the repo
+interface inherits apropriate subset of them.
+
+None of the methods on the repository interface should return `IQueryable<T>`
+type.
+Also make sure that the repository implementation does not 
+return `IQueryable<T>` hidden as `IEnumerable<T>`. 
+Always call `ToList()`
+or `ToArray()` to materialize query results before returning them 
+to the client.
+
+When it comes to the repository implementation, the implementation is free
+to inherit from *abstract* `GenericRepository<TEntity>` base class. 
+Alternatively it may use `ISession` or `DbSet` directly if it is more convinient. 
+No matter what approach you choose remember that "excessive" methods
+like `Delete`
+inerited from base class
+may not be visible on the repository interface.
+
+Please remember that your repository is NOT responsible for managing
+database transactions. This concern is best managed using 
+[Unit of Work pattern](https://martinfowler.com/eaaCatalog/unitOfWork.html).
+This pattern is already implemented by both `ISession` and `DatabaseContext`
+(think change tracking and dirty checking),
+we only need a better interface over them:
+{% highligh csharp %}
+public interface IUnitOfWork {
+    void BeginTransaction();
+
+    void Commit();
+    void Rollback();
+}
+{% endhighlight %}
+
+For most web applications it is enough to start transaction using `IUnitOfWork`
+at the begining of the request and either `Commit` or `Rollback` it at
+the end of the request. This can be done by using an action filter
+or a decorator around command handlers and/or services. 
+
+- Create a base class but NOT a base interface (see below).
 - Interface exposes only methods that are really needed (soft delete - means no delete operation).
 - Transactions are managed by the unit-of-work pattern.
 
