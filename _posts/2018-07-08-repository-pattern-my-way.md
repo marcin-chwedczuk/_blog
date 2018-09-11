@@ -246,14 +246,42 @@ public interface IUnitOfWork {
 }
 {% endhighlight %}
 
-For most web applications it is enough to start transaction using `IUnitOfWork`
-at the begining of the request and either `Commit` or `Rollback` it at
-the end of the request. This can be done by using an action filter
+For the most web applications it is enough to start transaction using `IUnitOfWork`
+at the begining of the HTTP request and either `Commit` or `Rollback` at
+the end of the request. This can be done by using either an action filter
 or a decorator around command handlers and/or services. 
 
-- Create a base class but NOT a base interface (see below).
-- Interface exposes only methods that are really needed (soft delete - means no delete operation).
-- Transactions are managed by the unit-of-work pattern.
+Example repository created using the above guidelines:
+{% highlight csharp %}
+public interface IOrderRepository {
+	// We do not need FindById so we do not included it
+	IEnumerable<Order> FindActiveOrdersAssignedToUser(UserId id); 
+}
+
+public class OrderRepository : GenericRepository<Order>, IOrderRepository {
+    public IEnumerable<Order> FindActiveOrdersAssignedToUser(UserId id) {
+        return base.FindAll()
+                .Where(order => order.AssignedTo.Id == id.Value)
+                .Where(order => order.State != OrderState.Closed)
+                .ToList();
+    }
+}
+{% endhighlight %}
+
+This should be obvious by now, but let's not take chances.
+Every method of our repositories should be covered by one or more
+integration tests that should use the same kind of DB that we use 
+in production environment. With queries encapsulated as methods
+on a repository this is easy.
+
+There is no rose without thorns and presented by me approach also has some
+serious limitations. Some of them can be fixed by using a bit different
+architecture approach (more about it later).
+Most common problems with "specific" repositories are as follows:
+
+- The repository interfaces then to grow uncontrollably over long periods
+ of time. 
+- 
 
 ### Turbocharging the "specific" repository pattern
 
