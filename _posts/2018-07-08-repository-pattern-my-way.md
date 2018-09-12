@@ -205,20 +205,22 @@ So what is the solution you may ask? Get ready...
 
 We should start repository design by specifying it's interface. 
 The interface should contain only methods required by clients of 
-the repository. In other words if nobody needs to delete a given entity
-we will not create `Delete` method on the interface.
+the repository. In other words if nobody needs to delete entities of a given type
+or it does not make sense from business point of view
+we will not add `Delete` method to the interface.
 
 If you are afraid that you will end up with different names for
 basic CRUD operations like `Delete` on one repo and `Remove` on the other
 you may create helper interfaces like `ICanDeleteEntity<TEntity>`,
 `ICanUpdateEntity<TEntity>` etc. that will contain only methods for
-specific usage like deleting, updating etc. Then you make sure that the repo
-interface inherits apropriate subset of them.
+specific usage like deleting, updating etc. 
+Then the repository interface can inherit 
+apropriate subset of them.
 
 None of the methods on the repository interface should return `IQueryable<T>`
 type.
 Also make sure that the repository implementation does not 
-return `IQueryable<T>` hidden as `IEnumerable<T>`. 
+return `IQueryable<T>` value hidden as `IEnumerable<T>` one. 
 Always call `ToList()`
 or `ToArray()` to materialize query results before returning them 
 to the client.
@@ -229,7 +231,7 @@ Alternatively it may use `ISession` or `DbSet` directly if it is more convinient
 No matter what approach you choose remember that "excessive" methods
 like `Delete`
 inerited from base class
-may not be visible on the repository interface.
+may be hidden by the repository interface.
 
 Please remember that your repository is NOT responsible for managing
 database transactions. This concern is best managed using 
@@ -239,6 +241,7 @@ This pattern is already implemented by both `ISession` and `DatabaseContext`
 we only need a better interface over them:
 {% highligh csharp %}
 public interface IUnitOfWork {
+    // or just Begin()
     void BeginTransaction();
 
     void Commit();
@@ -270,20 +273,99 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository {
 
 This should be obvious by now, but let's not take chances.
 Every method of our repositories should be covered by one or more
-integration tests that should use the same kind of DB that we use 
-in production environment. With queries encapsulated as methods
-on a repository this is easy.
+integration tests, which should use the same kind of DB that we use 
+in production environment. Remember always use *integration* tests to
+test your repositories.
 
-There is no rose without thorns and presented by me approach also has some
-serious limitations. Some of them can be fixed by using a bit different
-architecture approach (more about it later).
+### Turbocharging the repository pattern
+
+There is no rose without thorns and presented above approach also has some
+serious drawbacks. Some of them can be fixed by using a different
+architecture than classic 3-layer arch.
 Most common problems with "specific" repositories are as follows:
 
-- The repository interfaces then to grow uncontrollably over long periods
- of time. 
-- 
+- Repositories can over long periods of time accumulate 
+ dozens and dozens of `Find*` methods. Often these methods will be very similar
+ to each other. There are two ways to combat this unwanted grow. One is to use 
+ a query object pattern. Basically you group several of these `Find*` methods together
+ into one more general `Find` method. That method should accept an object that will
+ represent a query criteria. For example:
 
-### Turbocharging the "specific" repository pattern
+{% highlight csharp %}
+var ordersToCancel = _orderRepository.FindAllMatching(
+	// Alternatively you may use the builder pattern
+	// to create a criteria object.
+	new OrderCriteria {
+		StatusIsIn = new[] { OrderStatus.New, OrderStatus.InProgres },
+		OrderedItemsContainAll = new[] { searchedItem },
+		CustomerIs = GetCurrentCustomer()
+	});
+{% endhighlight %}
+
+To create a query from the criteria object we examine each search criteria and
+build query step-by-step:
+{% highlight csharp %}
+IQueryable<Order> q = base.FindAll();
+
+if (criteria.StatusIsIn != null) {
+	q = q.Where(o => criteria.StatusIsIn.Contains(o.Status));
+}
+
+// A long list of other conditions here..
+
+return q.ToList();
+{% endhighlight %}
+
+A closely related yet different aproach is to use the query object pattern (see 
+[this](https://martinfowler.com/eaaCatalog/queryObject.html) and
+[this](https://lostechies.com/jimmybogard/2012/10/08/favor-query-objects-over-repositories)).
+
+The second solution to this problem is more robust and reliable.
+Usually too big repositories are accompanied by huge services and 
+overgrown entities. You can slim down both your repos and services 
+by using something that I call CQRS-light. It differs from full-blown
+CQRS by using exactly the same database tables for both reads and writes.
+When doing CQRS-light we can use the same ORM framework for both reading and
+writing data and slowly migrate to real CQRS only in these parts of our
+application that really need it (do recall this 80+ columns searchable grid that
+generates 20+ inner join query that halts your DB server? - real CQRS can help here).
+
+The diagram below presents typical architecture of CQRS-light application:
+![CQRS-light architecture](assets/images/2018-07-08/cqrs-light.svg)
+
+The key principles of CQRS-light are:
+
+- Split all user actions into two categories. In the first put all actions that
+ can modify the state of the system like e.g. creating a new order in an e-commerce app.
+ In the second  
+ category put all actions that do not modify state of the system e.g. 
+ viewing an order details. First category represents commands (writes), the second one
+ queries (reads). Only commands can change state of the system.
+
+- Query handlers do NOT use repositories to access data. They access DB 
+ using whatever thechnology they want.
+ Usual configurations include a single ORM on both read and write sides, 
+ ORM for writes and micro-ORM like Dapper for reads or 
+ using ORM for writes and raw SQL for reads.
+
+- Command handlers can only use repositories to access and modify data. 
+ Command handlers 
+ should not call query handlers to fetch data from database. 
+ If a command handler needs to execute 
+ a complex query and this query can be answered by a query handler
+ you should duplicate this query logic and put it
+ in both query handler and in a repository method
+ (read and write sides must be separated).
+
+- Query handlers are tested only using integration tests.
+ For command handlers you will have both unit and integration tests.
+
+CQRS even in the "light" version is a huge topic and deserves a blog post of it's own.
+[MediatR](https://github.com/jbogard/MediatR) library is a good starting point
+if you want to find out more about CQRS-light approach.
+
+TODO: MediatR
+
 
 - Over time repository interfaces may accumulate a lot of query methods (`Find*`). To prevent this introduce CQS separation into your application.
 - Queries have different needs that business logic. They often need paging and filtering support. When DB store supports it we may use read-only transactions on Query site. No tracking is often used.
