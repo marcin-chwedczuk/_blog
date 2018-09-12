@@ -9,13 +9,13 @@ categories: 'mc'
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true
-published: false
+published: true 
 ---
 
 ### Generic repository pattern
 
 First, to avoid misunderstandings, let me explain what I understand
-by genric repository. Have your ever seen an interface like this:
+by generic repository. Have your ever seen an interface like this:
 {% highlight csharp %}
 public interface IGenericRepository<TEntity> 
     where TEntity : class 
@@ -34,7 +34,7 @@ public interface IGenericRepository<TEntity>
     void Delete(TEntity entityToDelete);
 }
 {% endhighlight %}
-Or maybe you saw it's twin brother that have a slighty 
+Or maybe you saw it's twin brother that have a slightly 
 different variant of `Get` method:
 {% highlight csharp %}
 IQueryable<TEntity> GetAll();
@@ -42,12 +42,12 @@ IQueryable<TEntity> GetAll();
 
 Inspiration for the first of these examples comes from 
 [official Microsoft documentation for ASP.NET MVC 4](https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application#implement-a-generic-repository-and-a-unit-of-work-class).
-As for the second example you can found countless number of blogs that
+As for the second example you can find countless number of blogs that
 describe this variant of the repository pattern e.g.
 [here](http://www.tugberkugurlu.com/archive/generic-repository-pattern-entity-framework-asp-net-mvc-and-unit-testing-triangle),
 [and here](https://deviq.com/repository-pattern/),
 [and also here](https://www.codeproject.com/Articles/814768/CRUD-Operations-Using-the-Generic-Repository-Patte)
-somethimes with slight variantions like returning `IEnumerable<TEntity>` instead of
+sometimes with slight variantions like returning `IEnumerable<TEntity>` instead of
 `IQueryable<TEntity>`. 
 And in the later case often with an additional method for generating
 queries like:
@@ -65,13 +65,13 @@ They expose full set of CRUD operations even for entities for which
 e.g. deleting does not make sense (for example when you deactivate users
 instead of deleting them from DB;
 also see [Udi Dahan post about deleting data](http://udidahan.com/2009/09/01/dont-delete-just-dont/)).
-But this problem can be easily solved by spliting this interface into three -
+But this problem can be easily solved by splitting this interface into three -
 one for reading, one for updating and one for deleting entities.
 
 The real problem that I have with these interfaces comes from their *improper*
 usage. The original idea behind them is that they should be used as a base
 interfaces for your custom repository interfaces, just like this:
-{% highligh csharp %}
+{% highlight csharp %}
 public interface IFooRepository : IGenericRepository<Foo> {
     Foo FindNewest();
     IEnumerable<Foo> FindAllOutdated();
@@ -80,9 +80,9 @@ public interface IFooRepository : IGenericRepository<Foo> {
 And that your command handlers and services 
 (in other words clients of your custom repositories) 
 should decide what methods are
-needed and should be put on your custom respository interface.
+needed and should be put on your custom repository interfaces.
 
-That was the theory. Unfortunately what I already saw a few times in my career 
+That is the theory. Unfortunately what I already saw a few times in my career 
 instead is this:
 {% highlight csharp %}
 // notice: this is NOT an abstract class
@@ -170,7 +170,7 @@ if (/* some complicated condition */) {
 
 To execute above query you must fulfill two if's conditions. This will make
 an integration test for the above query less readable and more fragile. 
-Instead imagine that this query is enapsulated by a repository method.
+Instead imagine that this query is encapsulated by a repository method.
 In integration test you would just call that repo method and check the 
 results - simple isn't it?
 
@@ -190,12 +190,12 @@ results - simple isn't it?
  industry we are faced with names like `result`, `ordersToProcess` or just `orders`.
  Wrapping the query inside a repo method will automatically give it a name. 
  Even if this name is not perfect we can refactor it later and all places 
- that call this metod will benefit from our refactoring automatically!
+ that call this method will benefit from our refactoring automatically!
 
 - Sometimes for performance reasons we are forced to use raw SQL to get our
  data from DB. Do you really want to litter your business logic with low
- level technicall stuff like `DbConnection`s, query parameters and `SqlException`s?
- Let's hide this low level stuff inside repository and let our business code 
+ level technical stuff like `DbConnection`s, query parameters and `SqlException`s?
+ Let's hide this low level stuff inside a repository and let our business code 
  concentrate on business logic. Also see 
  [Single level of abstraction principle](http://principles-wiki.net/principles:single_level_of_abstraction).
 
@@ -215,7 +215,7 @@ you may create helper interfaces like `ICanDeleteEntity<TEntity>`,
 `ICanUpdateEntity<TEntity>` etc. that will contain only methods for
 specific usage like deleting, updating etc. 
 Then the repository interface can inherit 
-apropriate subset of them.
+appropriate subset of them.
 
 None of the methods on the repository interface should return `IQueryable<T>`
 type.
@@ -227,10 +227,10 @@ to the client.
 
 When it comes to the repository implementation, the implementation is free
 to inherit from *abstract* `GenericRepository<TEntity>` base class. 
-Alternatively it may use `ISession` or `DbSet` directly if it is more convinient. 
+Alternatively it may use `ISession` or `DbSet` directly if it is more convenient. 
 No matter what approach you choose remember that "excessive" methods
 like `Delete`
-inerited from base class
+inherited from base class
 may be hidden by the repository interface.
 
 Please remember that your repository is NOT responsible for managing
@@ -239,7 +239,7 @@ database transactions. This concern is best managed using
 This pattern is already implemented by both `ISession` and `DatabaseContext`
 (think change tracking and dirty checking),
 we only need a better interface over them:
-{% highligh csharp %}
+{% highlight csharp %}
 public interface IUnitOfWork {
     // or just Begin()
     void BeginTransaction();
@@ -250,7 +250,7 @@ public interface IUnitOfWork {
 {% endhighlight %}
 
 For the most web applications it is enough to start transaction using `IUnitOfWork`
-at the begining of the HTTP request and either `Commit` or `Rollback` at
+at the beginning of the HTTP request and either `Commit` or `Rollback` at
 the end of the request. This can be done by using either an action filter
 or a decorator around command handlers and/or services. 
 
@@ -343,7 +343,7 @@ The key principles of CQRS-light are:
  queries (reads). Only commands can change state of the system.
 
 - Query handlers do NOT use repositories to access data. They access DB 
- using whatever thechnology they want.
+ using whatever technology they want.
  Usual configurations include a single ORM on both read and write sides, 
  ORM for writes and micro-ORM like Dapper for reads or 
  using ORM for writes and raw SQL for reads.
@@ -358,31 +358,38 @@ The key principles of CQRS-light are:
  (read and write sides must be separated).
 
 - Query handlers are tested only using integration tests.
- For command handlers you will have both unit and integration tests.
+ For command handlers you will have unit and optionally integration tests.
+ Repositories will be tested using integration tests.
 
 CQRS even in the "light" version is a huge topic and deserves a blog post of it's own.
 [MediatR](https://github.com/jbogard/MediatR) library is a good starting point
 if you want to find out more about CQRS-light approach.
 
-TODO: MediatR
+Let us return to the subject of the "specific" repository pattern drawbacks. 
+The second drawback that I want to mention is unwanted migration of the business
+logic into query definitions. For example even this simple query:
+{% highlight csharp %}
+public IEnumerable<Order> FindActiveOrders() {
+  return base.FindAll()
+          .Where(order => order.State != OrderState.Closed 
+                       && order.State != OrderState.Canceled)
+          .ToList();
+}
+{% endhighlight %}
+contains a piece of business logic that describes what 
+it means for an order to be active.
+Usually ORM's prevent us from encapsulating such pieces of logic
+into a separate properties like `IsActive`.
 
+What we need here is the specification pattern.
+You can find pretty decent overview of the specification pattern
+[here](https://enterprisecraftsmanship.com/2016/02/08/specification-pattern-c-implementation/).
+Our query method when we use the specification pattern should look similar to:
+{% highlight csharp %}
+public IEnumerable<Order> FindActiveOrders() {
+  return base.FindBySpec(new ActiveOrders())
+          .ToList();
+}
+{% endhighlight %}
 
-- Over time repository interfaces may accumulate a lot of query methods (`Find*`). To prevent this introduce CQS separation into your application.
-- Queries have different needs that business logic. They often need paging and filtering support. When DB store supports it we may use read-only transactions on Query site. No tracking is often used.
-- Use DbSet's on Query side. Test using integration tests.
-- Instead of creating one big query don't be shy to pull data out of
- say 3 repositories and then to combine them on query side.
-- Do NOT use queries from query side in business logic (instead put all
- necessary information into command that may be created from the result of
- query).
-- One only disadvantage of this apporach is that some part of business
- logic can be duplicated in repository and in query. If your system uses
- data warehouse or other advance reporting soultion the changes that some
- business logic is already duplicated in SQL are big.
-
-TODO: Use Specification pattern to combat business logic duplication:
-
-- Wrap business condition into separate classes. Tread these classes as
- predicates, use them to generate a query in repository and query class.
-- Requires more work and discipline
 
