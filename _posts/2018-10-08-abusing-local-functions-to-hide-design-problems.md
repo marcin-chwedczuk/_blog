@@ -17,14 +17,14 @@ and I saw a code similar to this:
 public class EnterpriseNotificationSender {
     private readonly IUserManagementService _userManagementService;
     // ctor and stuff...
- 
+  
     public void SendNotificationsToUsers(string companyId) {
         var addresses = GetRecipientsAddresses(companyId);
         foreach(var address in addresses) {
             SendNotification(address);
         }
     }
- 
+  
     private IEnumerable<EmailAddress> 
                      GetRecipientsAddresses(string companyId) {
         return _userManagementService
@@ -32,14 +32,14 @@ public class EnterpriseNotificationSender {
              .Where(UserShouldReciveNotification)
              .Select(user => user.EmailAddress)
              .ToList();
- 
+  
         bool UserShouldReciveNotification(User user) {
             return user.EmailAddress != null
                 && user.IsRegistered
                 && !user.IsDisabled;
         }
     }
- 
+  
     private void SendNotification(EmailAddress address) {
         // do stuff...
     }
