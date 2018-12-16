@@ -72,7 +72,7 @@ introduced a breaking change into their code.
 Just to sum up: Inheritance both exposes implementation
 details of components and makes evolution of their APIs more difficult.
 
-###### Liskov substitution principle is broken
+###### Liskov substitution principle is violated 
 
 In short some operations that make sense for a dictionary
 may not make sense for a cache. For example it makes no
