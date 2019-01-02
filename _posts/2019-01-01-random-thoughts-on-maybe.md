@@ -423,9 +423,143 @@ var sum2 =
     where min != 0
     select max / min;
 {% endhighlight %} 
-Yet in my opinion fluent interface is a much more readable
+Yet in my opinion fluent interface is in 90% of cases 
+a much more readable
 and easy to understand way to transform `Maybe<T>`s and other monads.
 For example we may rewrite last code snippet to:
 {% highlight csharp %}
+var res = Combine(
+        GetOptionalInt(),
+        GetOptionalInt(),
+        GetOptionalInt()
+    )
+    .Map(nnn => {
+        (var n1, var n2, var n3) = nnn;
+        return new { 
+            Max = Math.Max(n1, Math.Max(n2, n3)),
+            Min = Math.Min(n1, Math.Min(n2, n3))
+        };
+    })
+    .Filter(m => m.Min != 0)
+    .Map(m => m.Max / m.Min);
 
+// We need a few utils
+private static Option<(T,T)> Combine<T>(Option<T> a, Option<T> b)
+    => a.SelectMany(
+            _ => b,
+            (aValue, bValue) => (aValue, bValue));
+
+private static Option<(T,T,T)> Combine<T>(Option<T> a, Option<T> b, Option<T> c)
+    => Combine(a, b)
+        .SelectMany(
+            _ => c,
+            (tt, cValue) => (tt.Item1, tt.Item2, cValue));
 {% endhighlight %}
+Not as pretty as LINQ query but still readable. 
+
+At the end of the day consistency is what matters on real
+projects. Choose one style and try to use it in a consisten way.
+
+In this category we find libraries like 
+[LanguageExt](https://github.com/louthy/language-ext).
+This library has many flaws but still it is the best 
+functional library on the market. 
+My biggest dissapointment with LanguageExt is a poor documentation,
+which basically consists of just a list of functions without any guidelines how
+this library should be used and how it affects overall architecture.
+Compare this with [Vavr](https://www.vavr.io/vavr-docs/)
+(the most popular FP library for JVM) and you can clearly
+see the difference.
+
+If you decided that you want to use FP in you code, you
+should definitevely check awesome
+[Railway oriented programming](https://fsharpforfunandprofit.com/rop/)
+talk.
+
+`Maybe<T>` is not the only monad that is often used, other
+very popular one is `Either<L,R>`. 
+`Either<L,R>` is used to represent either a result of computation or an error.
+You may think of `Either<L,R>` as a functional response to exceptions.
+If you want to use `Maybe<T>` efficiently, you must learn 
+how it can be transformed it into other monads, in particular into `Either<L,R>`.
+E.g. we may make our last example more robust if we provide
+information to the user why the computation failed:
+{% highlight csharp %}
+var result = Combine(
+    GetOptionalInt(),
+    GetOptionalInt(),
+    GetOptionalInt()
+    )
+    .Map(ttt => {
+        (var n1, var n2, var n3) = ttt;
+        return new { 
+            Max = Math.Max(n1, Math.Max(n2, n3)),
+            Min = Math.Min(n1, Math.Min(n2, n3))
+        };
+    })
+    .ToEither(() => Error("Not all values are available."))
+    .Bind(m => Divide(m.Max, m.Min)); // FlatMap
+
+Either<Error, int> Divide(int a, int b) {
+    if (b == 0) return Left(Error("Cannot divide by zero"));
+    return Right(a / b);
+}
+
+// Helper classes:
+public class Error {
+    public string Message { get; }
+
+    public Error(string message) {
+        Message = message;
+    }
+
+    public override string ToString()
+        => $"Error({Message})";
+}
+
+public class ErrorHelpers {
+    // For `using static` import...
+    public static Error Error(string message)
+        => new Error(message);
+}
+{% endhighlight %}
+
+#### What to do with None?
+
+How much value you will be able to exctract from `Maybe<T>` depends on
+your attitude towards `None`s. 
+Every time when you have to handle `None`, you must decide if it is 
+the result of 
+[the accidential complexity](https://www.quora.com/What-are-essential-and-accidental-complexity)
+e.g. someone passed a wrong id to the REST api) 
+or if you just discovered a new edge case in your domain.
+
+To better understand the problem let's follow an imaginary example.
+Joe must write a simple function that will
+send an email message to all users whose subscriptions will end in the next month.
+During implementation Joe notices that `EmailAddress` field in `User` entity 
+is declared as `Option<Email>`:
+{% highlight csharp %}
+public class User {
+    public Option<Email> EmailAddress { get; }
+    // ...
+}
+{% endhighlight %}
+Now Joe knows that for some strage reason not all users have email addresses.
+Joe logs into production DB to confirm that some email addresses re missing 
+and indeed they are. Looks like Joe just discovered a new edge case.
+Joe goes to Mark a business analyst to describe the problem. Mark is a long
+timer in the company and knows that for a short period of time users
+were able to log into the platform using their phone numbers instead of emails.
+A new solution is created, users that have no email address will get
+a short text message. Also users without email should be asked to
+enter their email address next time they log into the platform. Success!
+
+On the other side consider what will happen if Joe just
+dig out the email address from `Maybe<T>` by accessing `Value` or if he just
+log that email is missing without telling anyone from business side?
+
+End of the part I. Soon I will write a follow up to this post in which 
+we will try to implement a perfect `Maybe<T>` type on our own and we will see
+that it is not an easy task in C#.
+
