@@ -13,10 +13,10 @@ disqus: true
 
 With functional programming on the rise nowadays, 
 more and more people start using functional 
-patterns in thier code.
+patterns in their code.
 One of the simplest patterns is `Maybe<T>` monad
-(also called `Option<T>` or `Optional<T>`).
-`Maybe<T>`'s primary usecase is to represent a possibly
+also called `Option<T>` or `Optional<T>`.
+`Maybe<T>`'s primary use case is to represent a possibly
 missing value. 
 
 I have already use `Maybe<T>` a few times in real
@@ -31,28 +31,29 @@ one of the two categories.
 ##### Category 1: Wants to eliminate `NullReferenceException`
 
 For a long time before `Maybe<T>` programmers tried to
-cleary state to the clients of their API that a given
+clearly state to the clients of their API that a given
 method may return `null` instead of an object.
-Some of them used special method naming conventions or 
-comments. 
-For example:
+Some of them used special naming conventions or 
+comments, for example:
 {% highlight csharp %}
-TODO: Add xml doc comments
-// Method name convention in action.
-// Alternative would be to use XML documentation comments.
+// Naming convention and XML documentation
+// comments in action.
 public interface IUserRepository {
-    // This method can return null.
+    /// <returns>
+    /// Returns <c>null</c> if user is not found.
+    /// </returns>
     User FindById(UserId id);
 
-    // Notice 'Required' word in metod name.
-    // Throws exception when user is not found.
+    /// <exception cref="EntityNotFound">
+    /// If user is not found.
+    /// </exception>
     User FindRequiredById(UserId id);
 }
 {% endhighlight %}
 Others resorted to using special marking attributes and
 static code analysis tools. 
 A good example of this category is 
-[JetBrains.Annotations](https://www.nuget.org/packages/JetBrains.Annotations) package, that can be used with ReSharper
+[JetBrains.Annotations](https://www.nuget.org/packages/JetBrains.Annotations) package, that can be used together with ReSharper
 to detect missing null checks:
 {% highlight csharp %}
 public interface IUserRepository {
@@ -61,14 +62,14 @@ public interface IUserRepository {
 }
 
 public interface IUserService {
-    void ActivateUser([NotNull]User user);
+    void ActivateUser([NotNull] User user);
 }
 {% endhighlight %}
 Yet another solution to this problem were 
 [Code Contracts](https://www.infoq.com/articles/code-contracts-csharp)
 developed by Microsoft.
 
-None of the solutions is pefect and `Maybe<T>` seems
+None of those solutions is perfect and `Maybe<T>` seems
 to offer a better alternative. 
 Why? Because it is checked by the compiler,
 does not require additional tools and does not slow
@@ -76,7 +77,8 @@ down compilation.
 But remember there is 
 [no silver bullet](https://en.wikipedia.org/wiki/No_Silver_Bullet),
 and `Maybe<T>` is not perfect either.
-Here is how we would use `Maybe<T>` with our example:
+
+We can use `Maybe<T>` like this:
 {% highlight csharp %}
 public interface IUserRepository {
     Maybe<User> FindById(UserId id);
@@ -90,16 +92,17 @@ else {
     return NotFound();
 }
 {% endhighlight %}
+
 If you find yourself in this category of programmers, 
 you would definitely
 want to use a lightweight library that
 does not force you to embrace a more functional style.
-One good library that I can recomment is: 
-[CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions)
+One good library that I can recommend is: 
+[CSharpFunctionalExtensions](https://github.com/vkhorikov/CSharpFunctionalExtensions).
 
 If you choose a different library, please make sure to check
 that `Maybe<T>` is implemented using `struct`, otherwise you
-may be suprised:
+may be surprised:
 {% highlight csharp %}
 Maybe<string> GetUserAgent() {
     return null;
@@ -114,7 +117,7 @@ Maybe<string>? bad;
 
 When I was writing this article I tried to gather some
 best practices of using `Maybe<T>`. 
-Unfotunatelly it was very difficult to provide a comprehensive
+Unfortunately it was very difficult to provide a comprehensive
 list. There is not much material on this on the web (I mean using 
 `Maybe<T>` *not* in the FP fashion) and the available
 material is often contradictory. 
@@ -131,7 +134,7 @@ and should not be used.
 A good starting point will be 
 [this SO question](https://stackoverflow.com/questions/26327957/should-java-8-getters-return-optional-type)
 with the first two answers. 
-From this question alone we may lern e.g. to never wrap
+From this question alone we may learn e.g. to never wrap
 a collection into `Maybe<T>`, 
 instead of we should return a possibly empty collection.
 
@@ -207,18 +210,18 @@ public class Program
 As we can see every Java'ish advice must be taken with 
 a grain of salt.
 
-Fortunatelly for us there is more and more C# posts about
+Fortunately for us there is more and more C# posts about
 using `Maybe<T>`. For example [this one](https://enterprisecraftsmanship.com/2015/03/13/functional-c-non-nullable-reference-types/)
 from the author of CSharpFunctionalExtensions library.
 
-Although I cannot provide you with a list of best practies,
-I think I have gathered enought experience to provide
+Although I cannot provide you with a list of best practices,
+I think I have gathered enough experience to provide
 you with a list of `Maybe<T>` code smells:
 
 * Nested `Maybe`s are wrong, for example `Maybe<Maybe<string>>`.
  Usually this is a sign that you should replace one of
  `Map` calls by a `FlatMap` (alternatively a `Select` by a `SelectMany` call).
-* `Maybe`s wrapping collections are wrong, for example `Maybe<List<User>>`.
+* `Maybe`s that wrap collections are wrong, for example `Maybe<List<User>>`.
  Instead return a non-empty or empty collection.
 * `Maybe`s wrapping nullable types are wrong, for example `Maybe<int?>`.
  Instead convert nullable type `T?` to `Maybe<T>`. 
@@ -286,7 +289,7 @@ As you probably heard C# 8.0 is going to introduce a nullable reference types (N
 Will NRT replace `Maybe<T>`?
 For "Category 1" programmers, NRTs offer a better
 alternative to `Maybe<T>`. On the other hand a lot of people
-that start in "Category 1", slowy begin to embrace more FP apporach.
+that start in "Category 1", slowly begin to embrace more FP approach.
 Usually people start by using `Maybe<T>` fluent interface to transform
 one `Maybe<T>` value into another. After some time they take a leap and
 switch to writing in a more functional fashion.
@@ -302,7 +305,7 @@ So it looks like NRT or not, `Maybe<T>` is going to stay with us for sure.
 ##### Category 2: Wants to embrace FP paradigm
 
 Programmers belonging to this category embraced FP. They
-often think about using F# at work and are a bit dissapointed
+often think about using F# at work and are a bit disappointed
 by poor C# pattern matching facilities. 
 
 Code written in FP fashion will never use `if` to check
@@ -378,7 +381,7 @@ be unpacked only in the controller:
 public IActionResult Get(int userId) {
     // WARNING: In real apps do not return bare strings 
     // from the REST api. 
-    // Always wrap them in DTO's / ViewModel's.
+    // Always wrap them in DTOs / ViewModels / QueryResponses.
     Maybe<string> culture = GetUserCulture();
     return Maybe(culture);
 }
@@ -390,12 +393,11 @@ public IActionResult Maybe<T>(Maybe<T> m)
 {% endhighlight %} 
 
 In this category of programmers there is also a small group
-of zealtos, that in my opinion go to far in their cult of monads. 
+of zealots, that in my opinion go a little bit to far in their cult of monads. 
 They propose to use LINQ query syntax to transform monads.
 Let my explain this using an example:
 {% highlight csharp %}
 // We want to sum three Option<int> values.
-
 private static Option<int> GetOptionalInt()
     => 3;
 
@@ -424,9 +426,9 @@ var sum2 =
     select max / min;
 {% endhighlight %} 
 Yet in my opinion fluent interface is in 90% of cases 
-a much more readable
-and easy to understand way to transform `Maybe<T>`s and other monads.
-For example we may rewrite last code snippet to:
+a more readable and understandable way 
+to transform `Maybe<T>`s and other monads.
+For example we may rewrite the last code snippet to:
 {% highlight csharp %}
 var res = Combine(
         GetOptionalInt(),
@@ -458,13 +460,13 @@ private static Option<(T,T,T)> Combine<T>(Option<T> a, Option<T> b, Option<T> c)
 Not as pretty as LINQ query but still readable. 
 
 At the end of the day consistency is what matters on real
-projects. Choose one style and try to use it in a consisten way.
+projects. Choose one style and follow it consistently.
 
 In this category we find libraries like 
 [LanguageExt](https://github.com/louthy/language-ext).
 This library has many flaws but still it is the best 
 functional library on the market. 
-My biggest dissapointment with LanguageExt is a poor documentation,
+My biggest disappointment with LanguageExt is poor documentation,
 which basically consists of just a list of functions without any guidelines how
 this library should be used and how it affects overall architecture.
 Compare this with [Vavr](https://www.vavr.io/vavr-docs/)
@@ -472,12 +474,12 @@ Compare this with [Vavr](https://www.vavr.io/vavr-docs/)
 see the difference.
 
 If you decided that you want to use FP in you code, you
-should definitevely check awesome
+should definitively check awesome
 [Railway oriented programming](https://fsharpforfunandprofit.com/rop/)
 talk.
 
-`Maybe<T>` is not the only monad that is often used, other
-very popular one is `Either<L,R>`. 
+`Maybe<T>` is not the only monad that is popular, other
+frequently used one is `Either<L,R>`. 
 `Either<L,R>` is used to represent either a result of computation or an error.
 You may think of `Either<L,R>` as a functional response to exceptions.
 If you want to use `Maybe<T>` efficiently, you must learn 
@@ -524,14 +526,20 @@ public class ErrorHelpers {
 }
 {% endhighlight %}
 
+Since FP is on the rise, you will find a lot of books, blogs, podcasts
+and MOOC's about using FP in C#. Also .NET has amazing F# community
+that is very welcoming to the beginners.
+One of the best blogs about FP in C# is in my opinion
+[Mark Seemann blog](http://blog.ploeh.dk/archive/).
+
 #### What to do with None?
 
-How much value you will be able to exctract from `Maybe<T>` depends on
+How much value you will be able to extract from `Maybe<T>` depends on
 your attitude towards `None`s. 
 Every time when you have to handle `None`, you must decide if it is 
 the result of 
-[the accidential complexity](https://www.quora.com/What-are-essential-and-accidental-complexity)
-e.g. someone passed a wrong id to the REST api) 
+[the accidental complexity](https://www.quora.com/What-are-essential-and-accidental-complexity)
+e.g. someone passed a wrong id to the REST API) 
 or if you just discovered a new edge case in your domain.
 
 To better understand the problem let's follow an imaginary example.
@@ -545,21 +553,24 @@ public class User {
     // ...
 }
 {% endhighlight %}
-Now Joe knows that for some strage reason not all users have email addresses.
-Joe logs into production DB to confirm that some email addresses re missing 
+Now Joe knows that for some strange reason not all users have email addresses.
+Joe logs into production DB to confirm that some email addresses are missing 
 and indeed they are. Looks like Joe just discovered a new edge case.
 Joe goes to Mark a business analyst to describe the problem. Mark is a long
 timer in the company and knows that for a short period of time users
 were able to log into the platform using their phone numbers instead of emails.
-A new solution is created, users that have no email address will get
-a short text message. Also users without email should be asked to
+A new solution is created. Users that have no email address will receive 
+a text message instead of an email. Also users without email will be asked to
 enter their email address next time they log into the platform. Success!
 
-On the other side consider what will happen if Joe just
+On the other hand consider what will happen if Joe just
 dig out the email address from `Maybe<T>` by accessing `Value` or if he just
-log that email is missing without telling anyone from business side?
+log a warning about missing email address 
+without telling anyone from the business side?
 
-End of the part I. Soon I will write a follow up to this post in which 
+##### End of the part I 
+
+Soon I will write a follow up to this post in which 
 we will try to implement a perfect `Maybe<T>` type on our own and we will see
 that it is not an easy task in C#.
 
