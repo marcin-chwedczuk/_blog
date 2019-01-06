@@ -115,7 +115,7 @@ public class OrderService {
             .Where(order => order.State != OrderState.Closed)
             .OrderByDescending(order => order.CreationDate)
             .Take(10)
-            .ToList();
+            .ToArray();
 
         return _mapper.MapTo<NewestOrderDto>(newestOrders);
     }
@@ -159,7 +159,7 @@ if (/* some complicated condition */) {
 			  .Where(order => order.State != OrderState.Closed)
 			  .OrderByDescending(order => order.CreationDate)
 			  .Take(10)
-			  .ToList(); 
+			  .ToArray(); 
 
 		 return _mapper.MapTo<NewestOrderDto>(newestOrders);
 	}
@@ -266,7 +266,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository {
         return base.FindAll()
                 .Where(order => order.AssignedTo.Id == id.Value)
                 .Where(order => order.State != OrderState.Closed)
-                .ToList();
+                .ToArray();
     }
 }
 {% endhighlight %}
@@ -373,7 +373,7 @@ public IEnumerable<Order> FindActiveOrders() {
   return base.FindAll()
           .Where(order => order.State != OrderState.Closed 
                        && order.State != OrderState.Canceled)
-          .ToList();
+          .ToArray();
 }
 {% endhighlight %}
 contains a piece of business logic that describes what 
@@ -388,7 +388,7 @@ Our query method when we use the specification pattern should look similar to:
 {% highlight csharp %}
 public IEnumerable<Order> FindActiveOrders() {
   return base.FindBySpec(new ActiveOrders())
-          .ToList();
+          .ToArray();
 }
 {% endhighlight %}
 
