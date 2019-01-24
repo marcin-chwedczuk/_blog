@@ -20,6 +20,8 @@ public class Method {
     public Method(string name) {
         Name = name;
     }
+    // Equals, GetHashCode, ToString skipped
+    // to save space.
 }
 public class TypedArgument {
     public Type Type { get; }
@@ -46,8 +48,8 @@ While implementing `MethodCall` class constructor, I wrongly assumed
 that `IReadOnlyList<T>` behaves like an immutable list.
 In other words that its content never changes.
 Due to this wrong assumption I did not create a defensive copy,
-that I usually do for collection arguments,
-but instead I just assigned `args` parameter to
+that I usually do for collection arguments.
+Instead I just assigned `args` parameter to
 a readonly property named `PassedArguments`.
 
 `MethodCall` object was then used by another component
@@ -78,10 +80,10 @@ public class MethodCallSpy {
 }
 {% endhighlight %}
 `MethodCallSpy`
-gathers `TypeArgument`s passed to it via `AddArgument` calls
+gathers `TypedArgument`s passed to it via `AddArgument` calls
 in `_currentArguments` list. 
 Then when someone calls `AddMethodCall` method, it uses stored
-`TypeArgument`s and a value of `method` parameter to construct
+`TypedArgument`s and a value of `method` parameter to construct
 a new `MethodCall` object and adds it to `_methodCalls` list.
 
 `MethodCallSpy` class worked perfectly, at least until I
@@ -108,11 +110,11 @@ public void AddMethodCall_AfterRefactoring(Method method) {
 Of course I also made a lot of other refactorings without
 running my tests (I had only a few integration tests).
 This was another mistake of mine. Looks like good
-practices help even if you are building
+programming practices help even if you are building
 quickly a Proof Of Concept solution.
 
-When I finally ran my tests, they all failed. For some reason
-`MethodCall` objects did not contain any `TypeArgument`s.
+When I finally ran my tests, they all have failed. For some reason
+`MethodCall` objects did not contain any `TypedArgument`s.
 Strange, isn't it...
 
 After a quarter of debugging, I have found that the bug was
@@ -178,7 +180,7 @@ private void ProcessList(IReadOnlyList<int> ints, Func<int> extraInt) {
 It demonstrates that `IReadOnlyList<T>` can change even
 during duration of a single method!
 
-So what should we do to void this class of bugs?
+So what should we do to avoid this class of bugs?
 Option one is to use old and proven defensive copy
 technique:
 {% highlight csharp %}
