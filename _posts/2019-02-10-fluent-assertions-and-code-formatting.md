@@ -1,0 +1,91 @@
+---
+layout: post
+cover: 'assets/images/mc_cover2.jpg'
+title: FluentAssertions and code formatting
+date: 2019-02-10 00:00:00
+tags: dotnet
+subclass: 'post tag-test tag-content'
+categories: 'mc'
+navigation: True
+logo: 'assets/images/home.png'
+disqus: true
+---
+
+Recently I was playing with
+[FluentAssertions](https://fluentassertions.com/)
+library.
+I was amazed by the beautiful error messages that FluentAssertions
+can generate. For example for this simple failing test:
+{% highlight csharp %}
+[Fact]
+public void add_returns_sum_of_arguments() {
+	// Arrange
+	var service = new ServiceA();
+	
+	// Assert
+	service.Add(1, 2).Should().Be(3);
+}
+{% endhighlight  %}
+FluentAssertions generates a message:
+{% highlight no-highlight %}
+Outcome: Failed
+Error Message:
+Expected service.Add(1, 2) to be 3, but found 42.
+{% endhighlight %}
+
+Unfortunatelly my joy did not last long.
+When I added an explanation to my assertion and
+broke the line because it got too long:
+{% highlight csharp %}
+[Fact]
+public void add_returns_sum_of_arguments() {
+	// Arrange
+	var service = new ServiceA();
+
+	// Assert
+	service.Add(1, 2)
+		.Should().Be(3, because: "three is sum of one and two");
+}
+{% endhighlight %}
+FluentAssertions reproted just:
+{% highlight no-highlight %}
+Outcome: Failed
+Error Message:
+Expected value to be 3 because three is sum of one and two, but found 42.
+{% endhighlight %}
+
+It turns out, in order to have this fancy error messages,
+we must place `.Should()` call on the same line as the
+tested expression:
+{% highlight csharp %}
+[Fact]
+public void add_returns_sum_of_arguments() {
+	// Arrange
+	var service = new ServiceA();
+
+	// Assert
+	service.Add(1, 2)/*abra cadabra*/.Should()
+		.Be(3, because: "three is sum of one and two");
+}
+{% endhighlight %}
+The above test generates a message:
+{% highlight no-highlight %}
+Outcome: Failed
+Error Message:
+Expected service.Add(1, 2)/*abra cadabra*/ to be 3 because three is sum of one and two, but found 42.
+{% endhighlight %}
+Notice that comment was also include in the message.
+
+This behavior of FluentAssertions really suprised me.
+Why the way we format our code have any influence over
+the readability of error messages?
+
+Anyway this is how FluentAssertions works.
+Moreover this behaviour is described 
+(with short explanation how it works) on the *first* page
+of [the official documentation](https://fluentassertions.com/documentation/#subject-identification).
+If only I have spend ten minutes reading the friendly docs instead of
+skimming it...
+
+From now on I will follow Read The Friendly Manual (or RTFM for short) advice!!!
+
