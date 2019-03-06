@@ -34,53 +34,72 @@ public struct FileSize {
        => $"{_bytes:##,#B}";
    
    public static FileSize operator+(FileSize left, FileSize right)
-       => new FileSize(left._bytes + right._bytes);
+       => new FileSize(checked(left._bytes + right._bytes));
    // Other operators...
 }
 {% endhighlight %}
 Yet when it came to computing a total size of set of files I saw
 code like this:
 {% highlight csharp %}
-var total = fileSizes.Aggregate((acc, curr) => acc + curr);
+var totalSize = fileSizes.Aggregate((acc, curr) => acc + curr);
 {% endhighlight %}
 What is wrong with this code?
 It forces readers to concentrate on irrelevant details like how
-to sum a list of file sizes. As a programmer, reading a lot
-of code I would prefer to have something like:
+to sum a list of `FileSize`s. As a programmer, reading a lot
+of code I would prefer to see something like:
 {% highlight csharp %}
-var total = fileSizes.Sum();
+var totalSize = fileSizes.Sum();
 {% endhighlight %}
-Which is shorter, easier to read and also hides implementation
-of `Sum` method. 
+Which is shorter, easier to read and allows me to concentrate
+on the actual business problem that I try to solve.
 
-The first code snippet is also a good example of 
-[Mixing levels of abstractions](http://wiki.c2.com/?MixingLevels)
-antipattern. If you never heard about this antipattern or
-of the _Single level of abstraction_ principle you can find
-[a good introduction here](http://principles-wiki.net/principles:single_level_of_abstraction).
+As an another example, imagine what would happen if people
+started writing:
+{% highlight csharp %}
+var listOfNumbers = Enumerable.Range(0, 10)
+	.Aggregate(new List<int>(), (list, el) => {
+		list.Add(el);
+		return list;
+	});
+{% endhighlight %}
+instead of:
+{% highlight csharp %}
+var listOfNumbers = Enumerable.Range(0, 10)
+	.ToList();
+{% endhighlight %}
+I hope that you agree with me that it would not be nice...
 
-Fortunately for us, we may quickly implement `Sum` 
-using extension methods and also solve the problem
-of summing empty list of file sizes (which previous snippet did not
-handle well):
+The general rule that is violated by both these examples
+is called _Single level of abstraction principle_, you can read
+more about it 
+[here](http://principles-wiki.net/principles:single_level_of_abstraction).
+In short it states that, all statements of a method should belong
+to the same level of abstraction.
+In other words we should not mix low and high level operations
+in a single method. In our example `Aggregate` and details how
+to use it are low level, computing a total size of set of files is
+on the other hand a high level one.
+
+Fortunately for us, we may quickly add appropriate `Sum` method
+to our program:
 {% highlight csharp %}
 public static class EnumerableOfFileSize {
-     /* This version is fine, but does not check overflow:
-     public static FileSize Sum(this IEnumerable<FileSize> sizes)
-         => sizes.Aggregate(FileSize.FromBytes(0), 
-                            (acc, curr) => acc + curr);
-     */
+    public static FileSize Sum(this IEnumerable<FileSize> sizes)
+      => sizes.Aggregate(FileSize.FromBytes(0), 
+                         (total, curr) => total + curr);
 
-     public static FileSize Sum(this IEnumerable<FileSize> sizes) {
-         ulong total = 0;
+    /* Or in more imperative style:
+    public static FileSize Sum(this IEnumerable<FileSize> sizes) {
+        ulong total = 0;
 
-         foreach (var size in sizes) {
-             total = checked(total + size.TotalBytes);
-         }
+        foreach (var size in sizes) {
+            total = checked(total + size.TotalBytes);
+        }
 
-         return new FileSize(total);
-     }
- }
+        return new FileSize(total);
+    }
+    */
+}
 {% endhighlight %}
 
 After this change we achieved code that is easy to read and
