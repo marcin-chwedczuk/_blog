@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover2.jpg'
 title: FluentAssertions and code formatting
 date: 2019-02-10 00:00:00
 tags: dotnet
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

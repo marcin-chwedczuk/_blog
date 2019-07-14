@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover9.jpeg'
 title: Comparing with nullsFirst and nullsLast
 date: 2017-01-14 00:00:00
 tags: java 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

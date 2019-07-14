@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover2.jpg'
 title: A closer look at Portable Executable MS-DOS Stub
 date: 2017-11-18 00:00:00
 tags: low-level 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover2.jpg'
 title: Iterative algorithm for drawing Hilbert curve
 date:   2016-08-06 00:00:00
-tags: algorithm 
+tags: algorithms
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

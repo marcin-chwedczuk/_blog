@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover4.jpg'
 title: How to check if a number is a power of two
 date: 2017-12-16 00:00:00
 tags: algorithms 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

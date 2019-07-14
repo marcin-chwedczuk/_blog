@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover5.jpg'
 title: Hibernate hello world application
 date:   2016-06-22 00:00:00
 tags: java hibernate
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

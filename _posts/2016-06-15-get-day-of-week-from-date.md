@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover7.jpg'
 title: Get day of week from date
 date:   2016-06-15 00:00:00
 tags: java algorithms
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

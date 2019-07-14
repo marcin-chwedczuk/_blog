@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover1.jpg'
 title: How null's are handled in switch statement in C#, Java and JavaScript
 date:   2016-07-09 00:00:00
 tags: csharp java javascript
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

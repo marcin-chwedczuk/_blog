@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/zen_cover2.jpg'
 title: Zen and the Art of Unit Testing
 date: 2017-02-19 00:00:00
 tags: java 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

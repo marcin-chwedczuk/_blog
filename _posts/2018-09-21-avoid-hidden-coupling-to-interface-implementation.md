@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover2.jpg'
 title: Avoid hidden coupling to interface implementation
 date: 2018-09-21 00:00:00
 tags: dotnet architecture
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

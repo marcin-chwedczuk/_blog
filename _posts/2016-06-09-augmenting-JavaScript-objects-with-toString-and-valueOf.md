@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover7.jpg'
 title: Augmenting JavaScript objects with toString and valueOf
 date:   2016-06-09 00:00:00
 tags: javascript
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 ---

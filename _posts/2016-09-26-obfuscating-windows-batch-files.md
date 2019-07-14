@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover3.jpg'
 title: Obfuscating windows batch files using undefined environmental variables
 date:   2016-09-26 00:00:00
-tags: Windows
+tags: windows
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover2.jpg'
 title: Object and collection initializers in C#
 date:   2016-06-12 00:00:00
 tags: csharp 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover7.jpg'
 title: Break out of block of code in Java and JavaScript
 date:   2016-06-04 00:00:00
 tags: javascript java
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 ---

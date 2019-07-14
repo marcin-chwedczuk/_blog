@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover3.jpg'
 title: Fluent Validation and complex dependencies between properties
 date: 2018-09-18 00:00:00
 tags: dotnet unit-testing
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

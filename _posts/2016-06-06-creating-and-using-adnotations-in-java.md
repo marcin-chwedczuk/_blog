@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover7.jpg'
 title: Creating and using annotations in Java
 date:   2016-06-06 00:00:00
 tags: java
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 ---

@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover4.jpg'
 title: .NET Core, HttpClient, Proxy and localhost
 date: 2018-05-03 00:00:00
 tags: dotnet
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

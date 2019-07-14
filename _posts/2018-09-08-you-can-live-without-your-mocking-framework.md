@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover3.jpg'
 title: You can live without mocking frameworks
 date: 2018-09-08 00:00:00
 tags: dotnet unit-testing
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

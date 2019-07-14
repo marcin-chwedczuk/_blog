@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/park_cover_1.jpg'
 title: How NOT to use the repository pattern
 date: 2018-07-08 00:00:00
 tags: architecture 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

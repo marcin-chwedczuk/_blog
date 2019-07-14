@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/cover8.jpg'
 title: Iterative solution to Towers of Hanoi problem
 date:   2016-11-26 00:00:00
-tags: algorithm
+tags: algorithms
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

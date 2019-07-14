@@ -7,7 +7,7 @@ logo: 'assets/images/home.png'
 current: tag
 ---
 
-<!-- < dynamically overriding backgrounds for tags as well as descriptions -->
+<!-- dynamically overriding backgrounds for tags as well as descriptions -->
 {% if page.url contains 'fables' %}
    {% assign tag_description='A series of short stories that make you think.' %}
 {% elsif page.url contains 'speeches' %}
@@ -17,7 +17,7 @@ current: tag
     {% assign new_cover='assets/images/cover1.jpg' %}
 {% endif %}
 
-<!-- < default}} -->
+<!-- default -->
 <!-- The tag above means - insert everything in this file into the [body] of the default.hbs template -->
 
 <!-- If we have a tag cover, display that - else blog cover - else nothing -->
@@ -30,7 +30,7 @@ current: tag
     </nav>
     <div class="vertical">
         <div class="main-header-content inner">
-            <h1 class="page-title">{{ page.tag | capitalize }}</h1>
+            <h1 class="page-title">{{ page.tag | downcase }}</h1>
             <h2 class="page-description">
             {% if tag_description %}
                 {{ tag_description }}

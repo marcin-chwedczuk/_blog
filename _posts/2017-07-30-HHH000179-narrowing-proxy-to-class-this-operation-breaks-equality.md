@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover6.jpg'
 title: Hibernate HHH000179 warning&#58 Narrowing proxy to class this operation breaks ==
 date: 2017-07-30 00:00:00
 tags: java
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

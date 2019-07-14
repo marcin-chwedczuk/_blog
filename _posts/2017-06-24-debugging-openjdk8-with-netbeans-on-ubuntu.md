@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover6.jpg'
 title: Debugging OpenJDK 8 with NetBeans on Ubuntu
 date: 2017-06-24 00:00:00
 tags: java
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

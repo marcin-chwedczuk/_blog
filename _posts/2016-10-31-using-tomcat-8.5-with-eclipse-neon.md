@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover8.jpg'
 title: Using Tomcat 8.5 with Eclipse Neon on Ubuntu
 date:   2016-10-31 00:00:00
 tags: java eclipse
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true

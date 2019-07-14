@@ -1,11 +1,12 @@
 ---
+author: mc
 layout: post
 cover: 'assets/images/mc_cover6.jpg'
 title: Castle Windsor most popular features
 date:   2016-09-11 00:00:00
-tags: CSharp 
+tags: csharp 
 subclass: 'post tag-test tag-content'
-categories: 'mc'
+categories: mc
 navigation: True
 logo: 'assets/images/home.png'
 disqus: true
