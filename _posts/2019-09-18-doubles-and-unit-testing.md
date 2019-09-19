@@ -2,7 +2,7 @@
 author: mc
 layout: post
 cover: 'assets/images/mc_cover2.jpg'
-title: Doubles and Unit Testing
+title: Floating point numbers and Unit Testing
 date: 2019-09-18 00:00:01
 tags: unit-testing 
 subclass: 'post tag-test tag-content'
@@ -52,7 +52,7 @@ The first strategy is to know the precision that is guaranteed by the algorithm
 that we are using, and to round the result to that
 precision before returning it to the client:
 {% highlight scala %}
-def square(x) = {
+def square(d: Double): Double = {
     val d2 = Math.pow(d, 2)
     // Precision from org.apache.commons:commons-math3:3.6.1
     return Precision.round(d2, 8)
@@ -79,6 +79,8 @@ be aware of the precision of our algorithm:
     result should be(0.3805292796606466 +- 0.000000005)
 }
 {% endhighlight %}
+In this case it is good to define the precision
+as a global constant (or as a constant per algorithm).
 
 Personally I prefer the first strategy, but with
 either of them our tests will be more robust and
@@ -106,7 +108,7 @@ inconsistently when comparing `NaN`s:
 {% endhighlight %}
 
 Unit testing frameworks often do not help here much.
-For example the following test (ScalaTest):
+For example the following test:
 {% highlight scala %}
 "how to check that a value is NaN?" in {
     val nan = Double.NaN;
