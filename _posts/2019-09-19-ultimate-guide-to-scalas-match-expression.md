@@ -2,8 +2,8 @@
 author: mc
 layout: post
 cover: 'assets/images/mc_cover3.jpg'
-title: WIP Ultimate guide to Scala's match expression 
-date: 2019-09-18 00:00:01
+title: Ultimate guide to Scala's match expression 
+date: 2019-09-19 00:00:01
 tags: scala
 subclass: 'post tag-test tag-content'
 categories: mc
@@ -12,16 +12,14 @@ logo: 'assets/images/home.png'
 disqus: true
 ---
 
-**WORK IN PROGRESS**
-
 Scala `match` expression is a very powerful tool.
-In hands of an experienced programmer it can be used to
+In hands of an experienced developer it can be used to
 create concise and easy to understand code,
 yet novice programmers are often intimidated by it.
 In this blog post I will describe how `match` expression
-work. We will start with the basics and end up with extractors.
+work. We will start with the basics and finish with the extractors.
 After reading this post you will know how `case List(a, b, c)`
-works and you should be able to write your own extractors.
+works and you will be able to write your own extractors.
 
 #### Pattern matching values
 
@@ -41,8 +39,8 @@ command match {
 `match` expression, in opposite to Java's `switch` is not
 limited to strings, Enums and numeric types, but can also match
 booleans, floating point numbers (although this isn't a good idea)
-`null` literal.
-We can also mix multiple types in a single `match`
+and `null` literal.
+We can also mix multiple value types in a single `match`
 expression:
 {% highlight scala %}
 val x: Any = 3.1415
@@ -80,7 +78,7 @@ println(weatherWildGuess)
 // rain?
 {% endhighlight %}
 
-When a value cannot be matched with any of the `case` clauses
+When a value cannot be pattern matched
 a `scala.MatchError` runtime exception is thrown.
 A special "catch all" case can be
 provided to handle all previously unmatched values 
@@ -97,8 +95,8 @@ val weatherWildGuess = skyColor match {
 Patterns are matched from top to bottom and the procedure
 stops on the first matching `case` clause.
 
-Sometimes we want to access the value matched by "catch all" case.
-This is very simple we just need to replace wildcard pattern (`_`)
+Sometimes we want to access the value matched by "catch all" case,
+this can be done by replacing wildcard pattern (`_`)
 with a variable name:
 {% highlight scala %}
 val weatherWildGuess = skyColor match {
@@ -106,12 +104,12 @@ val weatherWildGuess = skyColor match {
   case Color.Blue => "rain?"
   case Color.Black => "a volcano eruption?"
   case unknownColor => throw new IllegalArgumentException(
-      s"Cannot guess weather for sky color: " + unknownColor)
+      s"Cannot guess weather for sky color: $unknownColor")
 }
 {% endhighlight %}
 
 Often it is required to execute the same code for multiple values.
-With `match` this can be done using `|` operator:
+With `match` this can be done using `|` (pipe) operator:
 {% highlight scala %}
 answer.toLowerCase match {
   case "y" | "yes" | "ok" | "proceed" =>
@@ -131,8 +129,6 @@ val option = nullableValue match {
   case null => None
   case s => Some(s)
 }
-
-println(option)
 {% endhighlight %}
 
 Matching against Double `NaN` value is more problematic, since
@@ -159,13 +155,13 @@ We will return to pattern guards later.
 
 #### Pattern matching class instances
 
-Besides pattern matching primitive types, `match` can be used
+Besides pattern matching primitive types, `match` can also be used
 to compare normal class instances.
 For this to work, a matched class must provide a sensible
 override for `equals` and `hashCode` methods.
 
 Before we'll see an example, we need to learn about
-a certain pitfall of Scala, illustated by the following code:
+a certain pitfall of Scala, illustrated by the following code:
 {% highlight scala %}
 class NotEqualToAnything {
   override def equals(obj: Any): Boolean = false
@@ -174,7 +170,7 @@ class NotEqualToAnything {
 val x = new NotEqualToAnything()
 val y = new NotEqualToAnything()
 
-println(x.equals(y))
+println(x.equals(y)) // false
 
 x match {
   case y =>
@@ -187,7 +183,7 @@ x match {
 Why was `x` matched with `case y` despite `x.equals(y)` returning `false`?
 Because the `y` in `case y` is a new variable introduced by "catch-all" clause 
 to keep the matched value. It's the same construct that we used
-ealier to catch unknown colors (`case unknownColor`).
+earlier to catch unknown colors (`case unknownColor`).
 To tell Scala compiler that we want to use the value kept in
 a variable instead of introducing a new one,
 we just need to quote variable name using <code>&#96;</code> character:
@@ -200,7 +196,7 @@ x match {
 }
 {% endhighlight %}
 
-Returning to matching instances, here a working example:
+Returning to the instances matching, here is a working example:
 {% highlight scala %}
 class JustInt(val n: Int) {
   // hashCode() omitted for brevity
@@ -228,7 +224,7 @@ just3 match {
 {% endhighlight %}
 
 One more example before we move on. When we attempt to
-match `object`s we do not need to use <code>&#96;</code> esaping:
+match singleton objects we do not need to use <code>&#96;</code> escaping:
 {% highlight scala %}
 object X { }
 object Y { }
@@ -241,11 +237,11 @@ x match {
 // Prints:
 // it's X!
 {% endhighlight %}
-will work just fine!
+`case X` will work just fine!
 
 #### Pattern matching types
 
-Besides matching values `match` can also perform `instanceof` tests:
+Besides matching values, `match` can also perform `instanceof` tests:
 {% highlight scala %}
 val something: Any = new java.util.Random()
 
@@ -262,7 +258,7 @@ As usual on JVM `instanceof` tests will not work with
 parametrized types 
 (while `class List<T>` is a generic type, 
 `List<T>` usage like `List<String>` is
-called a parametetrized type). 
+called a parametrized type). 
 [Type erasure](https://en.wikipedia.org/wiki/Generics_in_Java#Problems_with_type_erasure)
 is here to blame:
 {% highlight scala %}
@@ -299,7 +295,7 @@ So far we where not interested in the actual value of the variable,
 but only in it's type and so we just discarded the value using `case _: Type`
 clause.
 But nothing prevents us from assigning the already type checked
-value to a variable of the target type:
+value to a variable:
 {% highlight scala %}
 val result = x match {
   case map: Map[_, _] => map.size * 2
@@ -308,7 +304,8 @@ val result = x match {
   case _ => 0
 }
 {% endhighlight %}
-Actually every `case` clause creates it's own lexical scope.
+
+Every `case` clause creates it's own lexical scope.
 This means that we can reuse variable names across different `case`es:
 {% highlight scala %}
 val result = x match {
@@ -346,10 +343,10 @@ the pattern binders later.
 
 #### Pattern matching tuples
 
-Pattern matching on tuples is supported out-of-the-box.
+Pattern matching on tuples is supported out of the box.
 We can match on tuple elements using all previously
 described matchers. We can ignore a tuple element
-by using match all wildcard (`_`):
+by using "match all" wildcard (`_`):
 {% highlight scala %}
 // unpacking tuple
 (1, 2, 3) match {
@@ -421,8 +418,8 @@ x match {
 val t: Any = "foo"
 t match {
   case tmp if tmp.isInstanceOf[String] =>
-    val ss = tmp.asInstanceOf[String]
-    println("it's a string: " + ss)
+    val s = tmp.asInstanceOf[String]
+    println("it's a string: " + s)
 }
 {% endhighlight %}
 The problem with pattern guards is that they are
@@ -481,11 +478,11 @@ for (i <- 1 to 10) {
 Here we also used pattern binders to name the values that where matched
 by `multipleOf` extractors.
 
-Unfortunatelly in current version of Scala we cannot create parametrized
+Unfortunately in the current version of Scala we cannot create parametrized
 extractors. In other words we cannot create a universal `multipleOf(n)` extractor.
-This also means that pattern guards are not 100% replacable by extractors.
+This also means that pattern guards are not 100% replaceable by extractors.
 
-As the name suggest extractors main purpose is to extract the
+As the name suggest, the extractors main purpose is to extract the
 data from matched values.
 Our next extractor will extract non-null values from nullable reference:
 {% highlight scala %}
@@ -546,9 +543,9 @@ for (list <- lists) {
 To return multiple values from the extractor we just need to return a
 tuple instead of a single value wrapped in `Option[A]`.
 
-Extractors can be nested, this is a really powerfull feature.
+Extractors can be nested, this is a really powerful feature.
 Given our previous `JList` extractor we can extract not only
-the first element but any finite number of starting elements from a list:
+the first element but any finite number of elements from the beginning of a list:
 {% highlight scala %}
 list match {
   case JList(e1, JList(e2, JList(e3, tail))) =>
@@ -590,9 +587,9 @@ list match {
 {% endhighlight %}
 
 Matching Java's `List[E]` using nested patterns is not
-very comforable. 
-In reality we would much prefer a syntax like `case JList(e1, e2, e3)`.
-Fortunatelly this can be done in Scala using extrators that return `Option[Seq[E]]`:
+very comfortable. 
+In reality we prefer a syntax like `case JList(e1, e2, e3)`.
+Fortunately this can be done in Scala using extractors that return `Option[Seq[E]]`:
 {% highlight scala %}
 object JList2 {
   def unapplySeq[E](list: JList[E]): Option[Seq[E]] = {
@@ -612,7 +609,7 @@ list match {
 {% endhighlight %}
 Notice that we used `unapplySeq` instead of `unapply`.
 
-With `Seq` extractor we are also able to match "tail" of
+With `Seq` extractor we can match "tail" of
 the list using `_*` pattern:
 {% highlight scala %}
 list match {
@@ -621,8 +618,8 @@ list match {
 }
 {% endhighlight %}
 
-The last thing that may come handy is ability to write
-extractor expression using etiher call notation `JList2(head, tail)`
+The last thing that may come handy is the ability to write
+extractor expression using either call notation `JList2(head, tail)`
 or using operator notation `head JList2 tail`:
 {% highlight scala %}
 for (list <- lists) {
@@ -634,7 +631,9 @@ for (list <- lists) {
   }
 }
 {% endhighlight %}
-This is mostly usefull when we want to use operators as extractors.
+This is mostly useful when we want to provide "operator like" experience
+for the programmers. For example when we want to match
+`List`s using `e1 :: e2 :: tail` expression.
 
 #### Scala buildin extractors 
 
@@ -649,17 +648,126 @@ case class Point(x: Double,
 {% endhighlight %}
 compiler, among other things, adds appropriate
 `apply` and `unapply` methods to the case class companion object.
-Thanks to this pattern matching works with case classes out-of-the-box:
+Thanks to this, pattern matching works with case classes out of the box:
 {% highlight scala %}
-p match {
-	case Point(x, y) => ???
+val r = line match {
+  case Line(Point(fx, fy), Point(tx, ty), color@_) => 
+    s"line(($fx,$fy) -> ($tx,$ty))"
+  case _ => 
+    "fail"
 }
 {% endhighlight %}
 
 ##### List
 
-TODO
+Scala `List` implements a singly linked list.
+`case object Nil` is used to represent an empty list.
+As a singleton object, `Nil` is matched by `case Nil` clause.
+`case class ::` is used as a linked list node, it contains
+two fields `head` and `next`. Both `Nil` and `::`
+extend abstract class `List[E]`.
+Because name of the `case class ::` ends in a `:` (colon),
+`::` when used as an operator is right associative:
+{% highlight scala %}
+(1 :: 2 :: 3 :: Nil) == ::(1, ::(2, ::(3, Nil)))
+{% endhighlight %}
+After this overly simplistic explanation on how `List[E]` works, we
+should now understand how pattern matching
+works with lists:
+{% highlight scala %}
+val lists = Seq(
+  List(),
+  List(1),
+  List(1, 2),
+  List(1,2,3,4))
+
+for (list <- lists) {
+  list match {
+    case Nil =>
+      println("empty list")
+
+    case head :: Nil =>
+      println(s"single element list $head")
+
+    case e1 :: e2 :: Nil =>
+      println(s"two element list $e1 $e2")
+      
+    case head :: tail =>
+      println(s"head: $head, tail: $tail")
+  }
+}
+// Prints:
+// empty list
+// single element list 1
+// two element list 1 2
+// head: 1, tail: List(2, 3, 4)
+{% endhighlight %}
+
+For programmers convenience `unapplySeq` is also
+provided on `List` singleton object. It works very similar to 
+our `JList` extractor:
+{% highlight scala %}
+val lists = Seq(
+  List(),
+  List(1),
+  List(1, 2),
+  List(1,2,3,4))
+
+for (list <- lists) {
+  list match {
+    case Nil =>
+      println("empty list")
+
+    case List(first, second) =>
+      println(s"two element list: [$first, $second]")
+
+    case List(head, tail @ _*) =>
+      println(s"head: $head, tail: $tail")
+  }
+}
+// Prints:
+// empty list
+// head: 1, tail: List()
+// two element list: [1, 2]
+// head: 1, tail: List(2, 3, 4)
+{% endhighlight %}
+
+It is a good exercise to create our own `List[E]` implementation
+with all pattern matching facilities that standard `List[E]` provides.
 
 ##### Regexes
 
-TODO
+Scala `Regex` class provides `unapplySeq` extractor.
+When a regex matches an input, the extractor will return
+values for all matching groups within the regex.
+You can create a group within a regex by using parentheses,
+for example regex `(\d{3})-(\d{5})` has two groups
+`\d{3}` and `\d{5}`. If you want to use parentheses
+but do not wish to create a group, you just need to put
+`?:` after starting `(` like in `(?:\d{3})?`.
+If you want to learn more about regular expressions
+you should check out _Mastering Regular Expressions_ book by Jeffrey Friedl.
+{% highlight scala %}
+val phoneNumbers = List(
+  "+48 123-123-123",
+  "123-123-123",
+  "123123123"
+)
+
+val plPhoneNumber = "^(?:\\+(\\d{2})\\s)?(\\d{3}-\\d{3}-\\d{3})$".r
+for (phoneNo <- phoneNumbers) {
+  phoneNo match {
+    case plPhoneNumber(countryPrefix, phoneNo) =>
+      println(s"countryPrefix: $countryPrefix, phoneNo: $phoneNo")
+    case _ =>
+      println("no match")
+  }
+}
+// Prints:
+// countryPrefix: 48, phoneNo: 123-123-123
+// countryPrefix: null, phoneNo: 123-123-123
+// no match
+{% endhighlight %}
+
+In practice regex extractors are rarely used with `match` expression.
+
