@@ -12,14 +12,14 @@ logo: 'assets/images/home.png'
 disqus: true
 ---
 
-I need to test my shiny Scala code.
+I need to test my new, shiny Scala code.
 Usually I write tests in [ScalaTest](http://www.scalatest.org/),
-but for generating mocks and stubs I still use good, old
+but for generating stubs I still use good, old
 [Mockito](https://site.mockito.org/).
 What can possibly go wrong?
-I create new file and start hacking test code.
+I open a new tab in my editor and start hacking test code.
 
-For the first surprise I don't have to wait long.
+For the first surprise I don't have to wait too long.
 In my code I use [value classes](https://docs.scala-lang.org/overviews/core/value-classes.html) 
 to represent entity IDs.
 For example I use `CustomerId`:
@@ -65,7 +65,7 @@ public interface RequestContext {
 }
 {% endhighlight %}
 Mockito uses reflection to figure out which type
-a give method returns.
+a given method returns.
 This gives us little hope for a nice solution.
 We can only try to hack around the problem, for example
 this monstrosity works:
@@ -97,7 +97,7 @@ verify(requestContext).setRequestId(RequestId(123L))
 // does NOT WORK 
 verify(requestContext).setRequestId(any())
 {% endhighlight %}
-And when I saw the results I was completly perplexed.
+But I saw the results I was completly perplexed.
 Verification with `RequestId(123L)` worked but the one with
 `any()` did not. But what is worse the second verification
 thrown `NullPointerException`. NPE? Really?
@@ -154,7 +154,7 @@ public abstract void setRequestId(long);
 {% endhighlight %}
 When I write `verify(...).setRequestId(any())` 
 Scala compiler adds instructions that convert the *object* returned
-by `any()` (remember generics does not exists on JVM level, so all
+by `any()` (remember generics does not exist on JVM level, so all
 these `T`s and `V`s are just `Object`s at runtime) to `long`.
 And this is the reason why I got `NullPointerException` earlier.
 
@@ -167,7 +167,7 @@ In bytecode it looks like this:
 31: invokevirtual #45 // Method RequestId.id:()J
 34: invokeinterface #29, 3 // InterfaceMethod RequestContext.setRequestId:(J)V
 {% endhighlight %}
-and the NPE is thrown by instruction at offset `31`.
+and the NPE is thrown by the instruction at the offset `31`.
 
 Now I understand the problem, but I still want to use `any()` matcher.
 There must be a trick to make it return a valid `RequestId`.
@@ -226,7 +226,7 @@ test("...") {
 }
 {% endhighlight %}
 WTF? Not again... Another strange problem that forces me
-too look under the bonnet.
+to look under the bonnet.
 
 Let's look at the bytecode using `javap -c`:
 {% highlight no-highlight %}
@@ -246,7 +246,7 @@ Let's look at the bytecode using `javap -c`:
 // (some code skipped here)
 {% endhighlight %}
 
-So the Scala compiler calls a hidden metod, with a name
+So the Scala compiler calls a hidden method, with a name
 `methodName$default$parameterIndex` on the trait,
 to figure out what value should be used as a value
 of the default parameter. Wow! I didn't expect something
