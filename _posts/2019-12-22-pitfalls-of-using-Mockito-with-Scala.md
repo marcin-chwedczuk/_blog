@@ -4,7 +4,7 @@ layout: post
 cover: 'assets/images/mc_cover2.jpg'
 title: Pitfalls of using Mockito with Scala
 date: 2019-12-22 00:00:01
-tags: algorithms
+tags: scala
 subclass: 'post tag-test tag-content'
 categories: mc
 navigation: True
