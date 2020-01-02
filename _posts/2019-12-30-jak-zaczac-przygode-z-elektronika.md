@@ -140,17 +140,69 @@ do płytki:
 
 Zanim opuścimy temat płytek warto jeszcze dodać, że
 na opakowaniu płytki znajduje się jeden z najważnejszych
-jej parametrów, mianowicie zakres grubości drótów/końcówek
+jej parametrów, mianowicie zakres grubości drutów/końcówek
 z jakimi płytka współpracuje. Ten parametr okaże się istotny
 gdy będziemy planować zakup przewodów kompatybilnych
 z płytką (czytaj nie każdy przewód pasuje do danej płytki).
 
 #### Przewody / połączenia / zworki
 
-TODO:
-* Przewody miękkie
-* Zestawy zworek
-* Drut cynowany, jednożyłowy + ściąganie izolacji
+Oprócz płytki stykowej, przy budowie układów będziemy
+też potrzebowali całej masy przewodów.
+Osobiście polecam zakup zestawu przewodów
+takich jak [Adafruit Hook-up Wire](https://www.adafruit.com/product/3174),
+wraz ze szczypcami do ściągania izolacji takimi
+jak [Adafruit wire stripper](https://www.adafruit.com/product/147):
+![Przewody](assets/images/2019-12-30/druty.jpg)
+Przy zakupie warto zwracać uwagę czy napewno kupujemy
+_jednożyłowy_, _cynowany_ przewód miedziany a nie na przykład
+wielożyłowy (czysta miedź pokrywa się
+nieprzewodzącą warstwą tlenków, cynowany drut zapewni
+nam znacznie lepszą jakość połączeń).
+
+Przedstawiony powyżej zestaw przewodów, ma grubość
+drutu AWG 22 (miara amerykańska), co przelicza się
+na polskie 0.6438 milimetra średnicy.
+Płytki stykowe z pierwszej sekcji, pracują poprawnie z przewodami
+o grubościach 0.3-0.8 milimetra, a więc są kompatybilne z tym
+zestawem przewodów.
+
+Ze względu na rosnące ceny miedzi zakup zestawów, takich
+jak te przedstawione powyżej, może wiązać się ze sporym wydatkiem.
+Należy jednak pamiętać że
+jeden zestaw przewodów powinien zaspokoić nasze potrzeby na mniej więcej rok,
+a szczypce to wydatek jednorazowy.
+Obecna cena powyższego zestawu przewodów w sklepie [Mouser](https://pl.mouser.com/)
+wynosi około 120PLN. Oczywiście zawsze warto sprawdzić czy
+nie znajdziemy lepszej oferty w polskich sklepach, na ceneo czy
+w końcu na AliExpressie.
+
+Oprócz zestawu przewodów, w sklepach można znaleść również zestawy zworek
+(numer jeden na zdjęciu):
+![Przewody ciąg dalszy](assets/images/2019-12-30/zwory.jpg)
+Zestawy takie są, w stosunku do ich ceny, kompletnie bezużyteczne.
+Zwory prawie nigdy nie miały potrzebnej długości gdy chciałem
+ich użyć. Krótkie zworki kończyły się bardzo szybko, podczas
+gdy długich zostawał nadmiar. Jedynm słowem: nie polecam.
+
+Polecam za to zakup elastycznych przewodów połączeniowych
+(numer dwa i trzy na zdjęciu).
+Przewody typu trzy dostępne są w zestawach o dosyć przystępnej
+cenie. Przewody typu dwa występują we wstęgach, które można
+rozrywać (nawet na pojedyńcze przewody) wedle upodobań.
+
+Do zabawy z płytkami stykowymi i Arduino potrzebne nam będą przede
+wszystkim przewody z wtykami męskimi (patrz numer trzy).
+Do zabawy z Rasbperry PI,
+a także modułami do Arduino (np. czujniki ruchu) przydadzą się
+przewody męsko-żeńskie (patrz numer dwa).
+
+Czasami zdarza sie, że przewody przychodzące w zestawach mają
+końcówki wtyków pokryte ochronną warstwą plastiku którą łatwo
+przeoczyć. Jeżeli przedów "źle łączy" należy sprawdzić czy
+końcówki nie posiadają takiej ochronnej izolacji i ewentualnie
+ją usunąć.
+
 
 #### Pozostałe narzędzia
 
