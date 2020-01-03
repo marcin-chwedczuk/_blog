@@ -194,7 +194,7 @@ rozrywać (nawet na pojedyńcze przewody) wedle upodobań.
 Do zabawy z płytkami stykowymi i Arduino potrzebne nam będą przede
 wszystkim przewody z wtykami męskimi (patrz numer trzy).
 Do zabawy z Rasbperry PI,
-a także modułami do Arduino (np. czujniki ruchu) przydadzą się
+a także z modułami do Arduino (np. czujniki ruchu) przydadzą się
 przewody męsko-żeńskie (patrz numer dwa).
 
 Czasami zdarza sie, że przewody przychodzące w zestawach mają
@@ -203,13 +203,39 @@ przeoczyć. Jeżeli przedów "źle łączy" należy sprawdzić czy
 końcówki nie posiadają takiej ochronnej izolacji i ewentualnie
 ją usunąć.
 
+Warto zarezerwować sobie dwa kolory (np. czarny i czerwony)
+na oznaczenie przewodów które mają potencjał masy i plusa zasialania.
+Warto też pomysleć o konwencji użycia kolorów na przykład: przewód biały to
+zawsze sygnał zegara.
+Poza tym im więcej kolorów mamy do dyspozycji tym lepiej.
 
 #### Pozostałe narzędzia
 
-TODO:
-* Penseta
-* Obcążki z płaską stroną do ucinania nużek
-* Multimetr
+Pozostałe przydatne narzędzia to:
+
+1. Mały płaski śrubokręt
+2. _Szczypce tnące boczne_
+ do ucinania zbyt długich wyprowadzeń elementów
+ ([model ze zdjęcia](https://botland.com.pl/pl/szczypce/5851-szczypce-tnace-boczne-yato-yt-2081-115mm-5906083920813.html))
+3. Oraz najbardziej przydatna z całej tej
+ trójki, bo pozwalająca wygodnie wyjmować i wkładać przewody
+ połączeniowe - penseta
+ ([model ze zdjęcia](https://sklep.avt.pl/peseta-antystatyczna-122mm-prosta-ostra-esd-10.html))
+
+![Przydatne narzędzia](assets/images/2019-12-30/szczypce.jpg)
+
+Przycinanie wyprowadzeń elementów za pomocą przedstawionych
+powyżej szczypiec jest odrobinę niebezpieczne.
+Nóżki, na przykład dużych diod LED, podczas przycinania mają tendencje to
+"wystrzeliwania" w znanym tylko sobie kierunku, dlatego
+warto też pomyśleć o zakupie 
+[okularów ochronnych](https://botland.com.pl/en/goggles/5626-okulary-yt-7367-5906083973611.html).
+
+Ostatnim, naprawdę niezbędnym narzędziem, w jakie
+powinniśmy się zaopatrzeć jest multimetr.
+Ja używam następującego modelu, mało znanej chińskiej
+marki i jestem z niego całkowicie zadowolony:
+![Multimetr](assets/images/2019-12-30/multi.jpg)
 
 #### Elementy elektroniczne
 
