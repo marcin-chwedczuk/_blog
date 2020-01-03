@@ -272,7 +272,7 @@ Popatrzmy na zdjęcie:
 ![Elementy do wlutowania i do płytek stykowych](assets/images/2019-12-30/proste.jpg)
 Elementy z grupy pierwszej są przeznaczone do wlutowania.
 Elementy z grupy drugiej, charakteryzującej się prostymi
-wyprowadzeniami są przewidziane do umiejszczenia na płytkach
+wyprowadzeniami, są przewidziane do umiejszczenia na płytkach
 stykowych. Zawsze należy dokładnie sprawdzić czy na pewno
 kupujemy takie elementy, jakich naprawdę potrzebujemy.
 
@@ -282,9 +282,43 @@ elementów, warto zaopatrzyć się w dobry organizer:
 
 #### Zasilanie
 
-* Bateria 9V + konektor + konwerter (ssie)
-* Zasilacz "pokładowy"
-    - nie piszczy jak jest zwarcie !
+Początkowo zasilałem moje układy z bateri 9V.
+Wykorzystywałem do tego celu kijankę (numer jeden),
+gniazdo które można włożyć w szynę zasilania płytki stykowej (numer trzy) oraz
+konwerter (numer dwa):
+![Zasilanie z bateri 9V](assets/images/2019-12-30/zas1.jpg)
+Konwerter okazał się konieczny, poniważ zakupu
+gniazda dokonałem "na oko" nie będąc świadomy że
+istnieje wiele różnych rozmiarów wtyków zasilania.
+
+Osobiście nie polecam tego sposobu zasilania.
+Po pierwsze jesteśmy zdani na napięcie bateri, a wiele
+układów wymaga niestandardowych napięć 3,3V lub 5V.
+Po drugie zaśmiecamy środowisko zużytymi bateriami,
+przy jednoczesnym zubożaniu naszego portfela.
+
+Najlepszym rozwiązaniem, dla osób dysponujących zapasem
+gotówki jest kupno zasilacza laboratoryjnego,
+nazywanego również zasilaczem warsztatowym.
+Dla wszystkich pozostałych, przynajmniej na początku,
+dobrym kompromisem jest zakup 
+[zasilacza płytek stykowych](https://sklep.avt.pl/avt3072.html):
+![Zasilacz do płytek stykowych](assets/images/2019-12-30/zas2.jpg)
+Należy pamiętać że sam zasilacz to tylko prosta płytka PCB
+(ang. printed circuit board, pl. płytka drukowana), do
+pracy potrzebny jej jest [zasilacz impulsowy](https://sklep.avt.pl/zasilacz-impulsowy-12v-1-5a-18w-dc2-5-5-5.html), oznaczony na zdjęciu numerem dwa.
+
+Przedstawiony powyżej zasilacz, który służy mi już kilka miesięcy,
+niestety nie jest pozbawiony wad.
+Najpoważniejsza z nich jest taka, że nie jesteśmy ostrzegani
+o zwarciu przewodów zasilania.
+Istnieją na rynku zasialacze które np. piszczą
+gdy dojdzie do zwarcia.
+W powyższym zasilaczu, zwarcie można rozpoznać jedynie po
+silnie rozgrzanym radiatorze.
+Dlatego pomimo że podałem linki do sklepu, zachęcam was do
+poszukania lepszego modelu lub jeżeli już taki
+posiadacie do pozostawienia komentarza z linkiem.
 
 #### Sklepy
 
