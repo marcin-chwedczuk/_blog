@@ -322,18 +322,31 @@ posiadacie do pozostawienia komentarza z linkiem.
 
 #### Sklepy
 
-* AVT, Borland, Forbot
-* Mouser
+Na koniec lista sklepów z których jestem
+względnie zadowolony:
 
-#### Nauka
+* [Sklep AVT](https://sklep.avt.pl/) związany od wielu lat
+ z czasopismem "Elektronika dla wszystkich"
 
-* Sztuka elektroniki, podręcznik dla studentów!
-* Ben Eaters
-* EEVBlog
-* All about circuits
-* Elektronika dla wszystkich
+* [Botland](https://botland.com.pl/pl/)
 
+Z zagranicznych warto wspomnieć:
 
+* [Mouser](https://pl.mouser.com/) - ten sklep
+ śmiało można nazwać profesjonalnym.
+ Można łatwo i szybko (czas dostawy nie przekracza tygodnia)
+ dostać układy praktycznie niedostępne na polskim rynku.
+ Ale uwaga, ceny produktów podane są na modłę amerykańską, 
+ a więc nie zawierają
+ 23% podatku VAT. Najeży o tym pamiętać porównójąc oferty.
 
+Oczywiście zawsze warto korzystać z porównywarek cen
+i sprawdzać opinie sklepów na forach internetowych.
+Bardziej odważni i cierpliwi mogą spróbować szczęscia na AliExpressie.
+
+Na zakończenie, "starożytne" i niestety niedziałające układy
+scalone polskiej produkcji (sic!) które otrzymałem od jednego
+z polskich sklepów:
+![Polskie scalaki](assets/images/2019-12-30/cemi.jpg)
 
 
