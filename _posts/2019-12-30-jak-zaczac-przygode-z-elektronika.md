@@ -239,11 +239,46 @@ marki i jestem z niego całkowicie zadowolony:
 
 #### Elementy elektroniczne
 
-* Rezystory - za ciękie nużki / Welleman kit
-* Uwaga: Elementy przystosowane do płytek stykowych
-  vs PCB (płytki drukowane) na przykładzie przycisków.
-* Zginanie nużek w układach scalaonych (IC)
-* Szfeczka na elementy elektroniczne
+Można by pomyśleć, że po całym tym zamieszaniu z płytkami,
+narzędziami i multimetrem zakup elementów elektronicznych 
+będzie czystą przyjemnością.
+Nic bardziej mylnego!
+Pierwszym zaskoczeniem jakie mnie spotkało, była niewielka
+średnica wyprowadzeń resystorów zakupionych w zestawie
+"dla początkujących". Średnica była tak mała, że czasami
+trudno było uzyskać dobre połączenie z płytką stykową.
+Ostatecznie skończyłem z [tym zestawem rezystorów](https://botland.com.pl/pl/rezystory-przewlekane/13895-zestaw-rezystorow-cf-tht-14w-velleman-kres-e3-480szt-5410329241803.html)
+
+![Zestaw velleman-kit](assets/images/2019-12-30/vkit.jpg)
+
+Dobrze ilustruje to powyższe zdjęcie, rezystor oznaczony
+numerem jeden pochodzi z taniego zestawu "dla początkujących".
+Posiada długie i ciękie wyprowadzenia słabo współpracujące z
+płytkami stykowymi, rezystor oznaczony numerem dwa pochodzi
+z zestawu velleman'a - wyrażnie widać krótsze ale za to
+grubsze i bardziej masywne wyprowadzenia.
+
+Osobiście odradzam również zakup rezystorów o mocy większej
+niż 0,25W. Rezystory 1W w porównaniu do 0,25W to prawdziwe olbrzymy.
+
+W przeciwieństwie do rezystorów, zakup diod LED
+(polecam "duże" 5mm) czy kondensatorów nie sprawiał
+większych problemów, elementy po prostu działały.
+
+Z koleji zakup przycisków ("switchy") i potencjometrów
+sprawił mi trochę kłopotów. Okazuje się że wiele elementów
+występuje w dwóch wersjach: do wlutowania i do płytek stykowych.
+Popatrzmy na zdjęcie:
+![Elementy do wlutowania i do płytek stykowych](assets/images/2019-12-30/proste.jpg)
+Elementy z grupy pierwszej są przeznaczone do wlutowania.
+Elementy z grupy drugiej, charakteryzującej się prostymi
+wyprowadzeniami są przewidziane do umiejszczenia na płytkach
+stykowych. Zawsze należy dokładnie sprawdzić czy na pewno
+kupujemy takie elementy, jakich naprawdę potrzebujemy.
+
+Na koniec, żeby nie tracić czasu na mozolne odnajdywanie potrzebnych
+elementów, warto zaopatrzyć się w dobry organizer:
+![Organizer](assets/images/2019-12-30/organizer.jpg)
 
 #### Zasilanie
 
