@@ -2,9 +2,9 @@
 author: mc
 layout: post
 cover: 'assets/images/mc_cover6.jpg'
-title: 
+title: Continuations in Java
 date: 2020-06-27 00:00:01
-tags: java, functional-programming
+tags: java functional-programming
 subclass: 'post tag-test tag-content'
 categories: mc
 navigation: True
