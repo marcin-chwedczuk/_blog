@@ -109,9 +109,9 @@ resize() {
 {% endhighlight %}
 Just copy and paste this code into the session and then enter `resize` (use Ctrl+Shift+Insert to paste in `putty`).
 After the `resize`, commands like `top` or `htop` should occupy the entire terminal window.
-![Before resize](assets/images/2020-07-07/beforer.png)
+![Before resize](assets/images/2020-07-07/beforeR.png)
 After resize becomes:
-![After resize](assets/images/2020-07-07/afterr.png)
+![After resize](assets/images/2020-07-07/afterR.png)
 
 You may want to add both the `resize` function and `TERM` environment variable to `~/.profile`
 to avoid copy-pasting them every time.
