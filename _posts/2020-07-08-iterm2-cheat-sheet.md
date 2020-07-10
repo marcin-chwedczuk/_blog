@@ -71,7 +71,7 @@ Then you can use `title foo` to set iTerm2 tab title.
 #### History search
 
 * `Control + R` - Start history search (fuzzy search)
-* `Control + R` - Move to the next suggestions
+* `Control + R` - Move to the next suggestion
 
 #### Other
 
