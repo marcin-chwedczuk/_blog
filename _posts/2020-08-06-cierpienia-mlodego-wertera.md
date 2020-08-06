@@ -50,8 +50,7 @@ Czasami przekazujemy do heurystyki również
 inne pomocnicze informacje,
 na przykład ostatni wykonany przez gracza ruch - jeżeli może to
 przyspieszyć wykonywanie obliczeń.
-Sama funkcja również może zwracać więcej danych niż tylko samą ocenę sytuacji na 
-polu gry.
+Sama funkcja również może zwracać więcej danych, niż tylko samą ocenę sytuacji na polu gry.
 Przykładowo heurystyka może także zwracać informację o zakończeniu gry i jej ewentualnym zwycięscy.
 Wiele zależy tutaj od konkretnej gry, w przypadku gry w kółko i krzyżyk
 obie te optymalizacje są możliwe.
@@ -76,12 +75,14 @@ Uruchomienie powyższego algorytmu na planszy 4x4, gdy pierwszy ruch
 należy do użytkownika przynosi jednak opłakane efekty.
 Program zajmuje po prostu kolejne pola na planszy, a my nie mamy
 najmniejszego problemu z wygraną.
-TODO: Obrazek
+
+![Dziwne zachowanie algorytmu](assets/images/2020-08-05/game1.png)
+X - Użytkownik, O - Komputer
 
 Dlaczego tak się dzieje? Okazuje się że przy grze 4x4, 3 pod rząd
 istnieje strategia wygrywająca która pozwala pierwszemu graczowi
 wygrać w dokładnie 3 ruchach.
-TODO: Obrazek strategia wygrywająca
+![Strategia wygrywająca](assets/images/2020-08-05/str1.svg)
 
 Z punktu widzenia algorytmu minimax każdy ruch skutkuje przegraną,
 dlatego algorytm wybierze pierwszy lub ostatni ruch 
@@ -91,14 +92,14 @@ chociaż nie jest to powszechnie przyjęta terminologia.
 
 Istnieje bardzo prosty sposób na wykrycie zjawiska depresji -
 wystarczy zamienić kolejność graczy tj. pozwolić komputerowi wykonać
-pierwszy ruch. Jeżeli spowoduje to nagłą poprawę działania algorytmu
+pierwszy ruch. Jeżeli spowoduje to nagłą poprawę sposobu działania algorytmu
 należy sprawdzić czy przypadkiem gra nie faworyzuje gracza wykonującego
 ruch jako pierwszy.
 
 Istnieje jeszcze jedno proste ulepszenie które możemy wykonać.
 Mianowicie jeżeli pozwolimy algorytmowi grać samemu ze sobą to
 okaże się że "nie spieszy mu się do wygranej".
-TODO: Obrazek
+![Ilustracja problemu](assets/images/2020-08-05/str2.svg)
 Ludzie zachowują się inaczej, chcemy wygrać jak najszybciej,
 w jak najmniejszej ilości ruchów.
 Możemy dodać to zachowanie do naszego algorytmu, modyfikując
