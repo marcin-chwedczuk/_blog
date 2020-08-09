@@ -48,10 +48,10 @@ zwrócona tym położenie gracza jest gorsze.
 
 Czasami przekazujemy do heurystyki również
 inne pomocnicze informacje,
-na przykład ostatni wykonany przez gracza ruch - jeżeli może to
+na przykład ostatni wykonany przez gracza ruch, jeżeli może to
 przyspieszyć wykonywanie obliczeń.
-Sama funkcja również może zwracać więcej danych, niż tylko samą ocenę sytuacji na polu gry.
-Przykładowo heurystyka może także zwracać informację o zakończeniu gry i jej ewentualnym zwycięscy.
+Sama funkcja może również zwracać więcej danych niż tylko samą ocenę sytuacji na polu gry.
+Przykładowo heurystyka może zwracać informację o zakończeniu gry i jej ewentualnym zwycięscy.
 Wiele zależy tutaj od konkretnej gry, w przypadku gry w kółko i krzyżyk
 obie te optymalizacje są możliwe.
 
@@ -72,7 +72,7 @@ score = maximizingPlayer ? score : -score;
 ### Plansza 4x4, 3 pod rząd wygrywają
 
 Uruchomienie powyższego algorytmu na planszy 4x4, gdy pierwszy ruch
-należy do użytkownika przynosi jednak opłakane efekty.
+należy do użytkownika przynosi jednak opłakane rezultaty.
 Program zajmuje po prostu kolejne pola na planszy, a my nie mamy
 najmniejszego problemu z wygraną.
 
@@ -81,7 +81,7 @@ X - Użytkownik, O - Komputer
 
 Dlaczego tak się dzieje? Okazuje się że przy grze 4x4, 3 pod rząd
 istnieje strategia wygrywająca która pozwala pierwszemu graczowi
-wygrać w dokładnie 3 ruchach.
+wygrać w dokładnie 3 ruchach:
 ![Strategia wygrywająca](assets/images/2020-08-05/str1.svg)
 
 Z punktu widzenia algorytmu minimax każdy ruch skutkuje przegraną,
@@ -98,7 +98,7 @@ ruch jako pierwszy.
 
 Istnieje jeszcze jedno proste ulepszenie które możemy wykonać.
 Mianowicie jeżeli pozwolimy algorytmowi grać samemu ze sobą to
-okaże się że "nie spieszy mu się do wygranej".
+okaże się że "nie spieszy mu się do wygranej":
 ![Ilustracja problemu](assets/images/2020-08-05/str2.svg)
 Ludzie zachowują się inaczej, chcemy wygrać jak najszybciej,
 w jak najmniejszej ilości ruchów.
@@ -113,28 +113,29 @@ double impatientPlayerHeuristics(GameState gameState, Player player) {
     return score + freePlaces*Q;
 }
 {% endhighlight %}
-Stałą `Q` musimy dobrać w taki sposób żeby wyrażenie `freePlaces*Q` nigdy
-nie przekraczało wartości zwracanej w przypadku wygranej przez 
+Stałą `Q` musimy dobrać w taki sposób żeby wartość 
+wyrażenia `freePlaces*Q` nigdy
+nie przekraczała wartości zwracanej w przypadku wygranej przez 
 funkcję `score`.
 Na przykład jeżeli dla wygranej heurystyka zwraca `1000.0` to użycie
-`Q = 1` jest rozsądnym wyborem.
+`Q = 1.0` jest rozsądnym wyborem.
 
 Na koniec zauważmy że plansza 5x5, 3 pod rząd zawiera w sobie
 planszę 4x4, 3 pod rząd, dlatego wszystko co powiedzieliśmy tutaj
 o zjawisku depresji odnosi się również do niej.
 
-### Plansza 4x4, 4 pod rząd wygrywaj
+### Plansza 4x4, 4 pod rząd wygrywają
 
 W przypadku plansz 4x4 i większych kluczowym problemem staje się wydajność.
 Prostym sposobem na poradzenie sobie z tym problemem jest rezygnacja z
 analizy całego drzewa gry i skupienie się na pierwszych N ruchach 
 wykonywanych przez graczy.
-W tym wypadku dobór odpowiedniej heurystyki staje się jeszcze bardziej ważny
+W tym wypadku dobór odpowiedniej heurystyki staje się jeszcze ważniejszy
 ponieważ
 oceniać musimy nie tylko gry zakończone, ale również takie
 które wciąż trwają.
 Z drugiej strony nadmierne skomplikowanie heurystyki negatywnie wpływa 
-na złożoność obliczeniową i co za tym idzie na czas oczekiwania na wybór ruchu.
+na złożoność obliczeniową i co za tym idzie, na czas oczekiwania na wybór ruchu.
 
 Jako kompromis możemy przyjąć na przykład analizę jedynie siedmiu
 posunięć graczy w przyszłość, przy jednoczesnym rozbudowaniu heurystyki
@@ -156,6 +157,7 @@ symulujemy ruch gracza, możemy wykorzystać mutowalną strukturę danych
 wraz z wycofywaniem ruchów (ang. backtracking):
 {% highlight java %}
 for (Move playerMove: movesToCheck) {
+    // Modify board in place
     board.put(playerMove.position, playerMove.mark);
 
     // Do recursive minimax call and other stuff
@@ -181,7 +183,7 @@ Set<Moves> getMovesToCheck(Board board, int depth) {
         return Set.of();
     }
 
-    // For first 3 player moves we analyze every possibility
+    // For the first three player moves we analyze every possibility
     var allPossibleMoves = board.getMovesForAllFreeFields()
     if (depth < 3) {
         return allPossibleMoves;
@@ -207,7 +209,7 @@ wynik (pamiętając o negacji dla gracza MIN) z wywołania funkcji minimax.
 * Nasza aplikacja powinna posiadać funkcję umożliwiającą cofnięcie
  ostatnich ruchów gracza. Znacznie ułatwi to debugowanie za pomocą
  debuggera. W przypadku bardziej skomplikowanych gier typu warcaby
- warto dodać opcję zapisy i odczytu stanu gry do pliku.
+ warto dodać opcję zapisu i odczytu stanu gry z pliku.
 * Warto dodać opcję gry komputer vs komputer, jak również wyboru
  kto stawia pierwszy ruch. Pozwala to lepiej ocenić działanie algorytmu.
 * Zwracając optymalny ruch algorytm minimax zwraca tak naprawdę
