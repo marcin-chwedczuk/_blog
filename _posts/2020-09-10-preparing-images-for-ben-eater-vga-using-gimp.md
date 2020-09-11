@@ -90,3 +90,19 @@ Let's finish with the results that I achieved:
    </tbody>
 </table>
 Of course the converted images look perfect, my card on the other hand introduces quite a lot of distortions...
+
+UPDATE: I managed to find the source of distortions in my card. 
+I mixed address lines 3 and 4 from VSync to EEPROM module.
+After swapping two wires I got a clear and crisp image:
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <img src="assets/images/2020-09-10/working.png" />
+      </td>
+      <td>
+        <img src="assets/images/2020-09-10/card.png" />
+      </td>
+    </tr>
+   </tbody>
+</table>
