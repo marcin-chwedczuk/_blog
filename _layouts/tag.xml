@@ -9,8 +9,10 @@ title: nil
 	  <author>{{ site.author }}</author>
 	  <pubDate>{{ post.date | date_to_xmlschema }}</pubDate>
 	  <guid>{{ site.baseurl }}{{ post.url }}</guid>
-	  <description><![CDATA[
-	     {{ post.content | expand_urls : site.url }}
-	  ]]></description>
+	{% if post.excerpt %}
+          <description>{{ post.excerpt | xml_escape }}</description>
+        {% else %}
+          <description>{{ post.content | xml_escape }}</description>
+        {% endif %}
 	</item>
 {% endfor %}
