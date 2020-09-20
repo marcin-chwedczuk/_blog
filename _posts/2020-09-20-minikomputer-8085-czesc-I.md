@@ -19,7 +19,7 @@ oraz oparty na CPU Intela [MiniMax8085 Sergieja Malinova](http://www.malinov.com
 Mój minikomputer
 postanowiłem jednak oprzeć na artykule opublikowanym na łamach czasopisma [Nuts and Volts](https://www.nutsvolts.com/),
 autorstwa Davida Huntera. Dokładniej chodzi o artykuł
-[Build a pocket-sized ALTAIR computer](https://www.nutsvolts.com/magazine/article/build-a-pocket-sized-altair-computer#content-extras)
+[Build a pocket-sized ALTAIR computer](https://www.nutsvolts.com/magazine/article/build-a-pocket-sized-altair-computer)
 z początku 2019 roku.
 
 Olbrzymią zaletą opisywanego w artykule komputera jest jego prostota.
