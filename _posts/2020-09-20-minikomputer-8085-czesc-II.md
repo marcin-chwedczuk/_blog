@@ -4,7 +4,7 @@ layout: post
 cover: 'assets/images/mc_cover6.jpg'
 title: 'Minikomputer 8085 - Część II'
 date: 2020-09-29 00:00:01
-tags: polish elektronika
+tags: polish elektronika jvmbloggers
 subclass: 'post tag-test tag-content'
 categories: mc
 navigation: True
