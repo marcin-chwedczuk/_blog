@@ -12,7 +12,7 @@ logo: 'assets/images/home.png'
 disqus: true
 ---
 
-W poprzednim wpisie udało nam się zbudować działający minikomputer oraz uruchomić
+W [poprzednim](minikomputer-8085-czesc-I) wpisie udało nam się zbudować działający minikomputer oraz uruchomić
 na nim napisany przez Davida Huntera monitor. Dla przypomnienia zbudowana przeze mnie
 maszyna wyglądała następująco:
 ![Minikomputer wyłaniający się z chaosu](assets/images/2020-09-29/comp1.jpeg)
@@ -26,21 +26,21 @@ kondensatory odsprzęgające (ang. decoupling capacitors).
 Układy scalone, zwłaszcza te należące do rodziny 74LS 
 potrafią emitować sporo zakłóceń podczas zmiany stanu.
 Dołączenie kondensatora foliowego lub ceramicznego o pojemności 0.1uF do linii zasilania układu
-scalonego pozwala zmniejszyć zakłócenia i poprawia stabilność działania układu.
+pozwala zmniejszyć zakłócenia i poprawia stabilność jego działania.
 
 Teraz nadszedł czas żeby naprawić wszystkie powyższe mankamenty. 
 Przewody połączeniowe zastąpiłem
 ciętymi na wymiar przewodami jednożyłowymi. Oprócz kondensatorów odsprzęgających,
 dodałem do szyny zasilania również jeden duży kondensator elektrolityczny o
-znacznej pojemności (470uF). Generalnie dodawania tak dużych kondensatorów nie jest
+znacznej pojemności (470uF). Generalnie dokładanie tak dużych kondensatorów nie jest
 zalecane bo potrafi mocno obciążyć zasilacz w momencie startu układu.
 Ja używam prostego zasilacza do płytek stykowych który przeżył już niejedno zwarcie,
 więc na razie postanowiłem zignorować ten problem.
 Efekt mojej pracy widać poniżej:
 ![Minikomputer tym razem z porządnymi połączeniami](assets/images/2020-09-29/comp2.jpeg)
 
-Przy okazji przebudowy komputera postanowiłem wprowadzić też kilka modyfikacji.
-Po pierwsze zastąpiłem pojedyńczy rejestr wejścia/wyjścia z projektu Huntera
+Przy okazji przebudowy komputera postanowiłem wprowadzić kilka modyfikacji.
+Po pierwsze zastąpiłem pojedyńczy rejestr wejścia/wyjścia z projektu Huntera,
 dwoma rejestrami wyjściowymi i jednym wejściowym. Dzięki temu w prosty sposób
 będziemy mogli podłączyć do komputera zarówno 2x16 znakowy wyświetlacz LCD,
 jak i parę przycisków. 
@@ -79,7 +79,7 @@ generowania kodu dla 8085.
 
 Ostatecznie postanowiłem użyć kompilatora [Small-C](https://github.com/ncb85/SmallC-85),
 napisanego ponad 30 lat temu przez Chrisa Lewisa, a przywróconego do życia dzięki wysiłkom
-użytkownika [ncb85](https://github.com/ncb85). `ncb85` oprócz kodu kompilatora
+użytkownika [ncb85](https://github.com/ncb85). ncb85 oprócz kodu kompilatora
 udostępnił też na swoim koncie [przykład jego użycia](https://github.com/ncb85/utilis-and-examples/tree/master/cpm_hello)
 co pozwoliło mi zaoszczędzić niemało czasu.
 
@@ -87,7 +87,7 @@ Wracając do samego kompilatora, jest to dość stary program który powstał je
 wprowadzeniem standardu C89 (sic!). Poniżej garść ciekawostek które się z tym wiążą:
 
 * Nie ma typu `void`. Metody domyślnie zwracają typ `int`. :deal-with-it-parrot:
-* Brak wsparcia dla inicjacji wartości zmiennych globalnych.
+* Brak wsparcia dla inicjalizacji wartości zmiennych globalnych.
 * Deklaracja metod musi byc wykonana w przestarzałym stylu [K&R](https://en.wikipedia.org/wiki/C_(programming_language)#K&R_C):
 
 {% highlight c %}
@@ -129,4 +129,82 @@ Do tego celu należy wykorzystać `as8085` będący częścią pakietu [ASxxxx](
 `ASxxxx` jest wciąż rozwijanym projektem posiadającym naprawdę dobrą [dokumentację](https://shop-pdp.net/ashtml/asxbld.htm).
 Dzięki temu zbudowanie assemblera ze źródeł nie powinno sprawić nam żadnych problemów.
 
+Czas na małą dygresję. Po starcie procesor 8085 zaczyna
+wykonywanie kodu programu od adresu `0x0000`.
+Wartości rejestrów procesora, w szczególności rejestru `SP` odpowiedzialnego
+za zarządzaniem stosem nie są na starcie procesora dobrze zdefiniowane.
+Zanim wywołamy naszą funkcję `main()` powinniśmy nadać rejestrowi `SP` poprawną wartość.
+Zbudowany przeze mnie komputer posiada następującą mapę pamięci:
+{% highlight no-highlight %}
+Adresy          | Przeznaczenie
+---------------------------------
+0x0000 - 0x1FFF - ROM
+0x2000 - 0x3FFF - RAM
+0x8000          - output port 1
+0xA000          - output port 2
+0xC000          - input port
+{% endhighlight %}
+Stos na 8085 podobnie jak w innych procesorach Intela rośnie w dół (w kierunku mniejszych adresów).
+Dodatkowo warto żeby adres stosu był parzysty, rozsądnym wyborem jest więc ustawienie `SP`
+na adres `0x3FFE` a więc przedostatni dostępny adres pamięci RAM.
 
+Ostatecznie stworzyłem plik `cstart.asm` odpowiedzialny za przygotowanie
+środowiska dla C:
+{% highlight asm %}
+;       Run time setup for Small C.
+        .module CSTART
+        .area   CSTART (REL,CON) ;program area CRTSO is RELOCATABLE
+        .list   (err, loc, bin, eqt, cyc, lin, src, lst, md)
+        .nlist  (pag)
+        .globl  cstartend
+
+        lxi h,#0x3ffe   ; Initialize stack on even address.
+                        ; Stack grows downwards.
+        sphl            ; Load HL into SP
+
+        call    main    ; call main program
+
+stop:
+        hlt             ; stop processor
+        jmp stop        ; interrupt can wake CPU from hlt
+
+cstartend:
+       .end
+{% endhighlight %}
+Pozostaje nam już tylko upewnić się że kod z pliku `cstart.asm` wyląduje pod
+adresem `0x0000`. Do tego celu musimy 1) nadać mu unikalną nazwę `CSTART` 
+2) wykorzystać parametr linkera `-b` żeby wymusić pozycje obszaru `CSTART`
+w pamięci EEPROM.
+
+Poniżej przedstawiam parametry linkera (plik `eeprom.lnk`):
+{% highlight no-highlight %}
+-ioux
+eeprom-img
+cstart
+main
+-b CSTART=0
+-b SMALLC_GENERATED=0+cstartend
+-e
+{% endhighlight %}
+Zauważmy że kod w pliku `cstart.asm` kończy się deklaracją labelki `cstartend`.
+Labelkę to wykorzystujemy żeby zmusić linker to umieszczenia kodu wygenerowanego 
+przez Small-C (`SMALLC_GENERATED`) zaraz po kodzie sekcji `CSTART`.
+
+Jeżeli zaczniemy pisać bardziej skomplikowane programy w C to może się okazać
+że nasz program wymaga funkcji, znajdujących się we wspomnianej już przeze mnie
+bibliotece `crun8085lib.asm`. Na chwilę obecną po prostu kopiuje brakujące funkcje
+do pliku `cstart.asm`, postaram się to poprawić w kolejnym wpisie.
+
+Ostatecznie wynikiem kompilacji i linkowania jest plik w formacie Intel HEX
+który możemy już wypalić w pamięci EEPROM.
+
+W trakcie zabawy z Mikrusem przygotowałem prosty [program](https://github.com/marcin-chwedczuk/mikrus-85/tree/master/test/single-file-prog)
+który wypisuje wiadomość na ekran LCD oraz pozwala na obsługę dwóch przycisków:
+![Obsługa LCD](assets/images/2020-09-29/lcd.jpeg)
+
+Na koniec zagadka dla czytelników: W tej chwili Small-C nie pozwala nam wykorzystać zmiennych
+globalnych. Odczyt zmiennych jest co prawda możliwy ale zapisy do zmiennych zdają się "znikać"?
+Dlaczego tak się dzieje?
+
+W następnym wpisie postaram się to naprawić.
+Koniec części drugiej.
