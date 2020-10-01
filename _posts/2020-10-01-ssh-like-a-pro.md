@@ -105,6 +105,9 @@ old-pc$ # yay!
 WARNING: You should only use forwarding when logging into servers that
 you fully trust (see `man ssh` for details).
 
+TIP: With the power of `ssh-add` there is no reason to have a key without password protection.
+Remember to password protect all your keys. Always!
+
 ### Using ~/.ssh/config
 
 Sometimes your user name is too long or hard to remember or maybe the server name is
