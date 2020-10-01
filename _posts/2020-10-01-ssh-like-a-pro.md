@@ -173,7 +173,51 @@ on the server and local machine.
 
 To exit SFTP mode just enter `..` in the top directory to which you `sftp`ed.
 
+### Port forwarding
+
+Let's say that there there is a service running on my Raspberry PI that is accessible only
+via `localhost`. For example it can be a simple web server:
+{% highlight bash %}
+pi$ python3 -m http.server 7777 --bind 127.0.0.1 --directory .
+{% endhighlight %}
+Because server is listening only on `127.0.0.1` instead of `0.0.0.0`, 
+we cannot access it from outside of my Raspberry PI:
+{% highlight bash %}
+% curl 192.168.0.10:7777
+curl: (7) Failed to connect to 192.168.0.10 port 7777: Connection refused
+{% endhighlight %}
+
+To access the server we may e.g. forward connections to port 5432 on my laptop
+to port 7777 on pi (this is called tunneling or port forwarding).
+We can do this using SSH:
+![SSH Tunnel](assets/images/2020-10-01/tunnel1.svg)
+{% highlight bash %}
+mac$ ssh -L localhost:5432:localhost:7777 pi
+# In other terminal
+mac$ curl localhost:5432
+<html>
+	<head></head>
+	<body>
+		Welcome on Raspberry PI!!!
+	</body>
+</html>
+{% endhighlight %}
+The general syntax is `-L local-machine:local-port:remote-machine:remote-port`.
+Notice that for the `remote-machine` we choose `localhost`, but we could e.g.
+chose other computer to which `pi` can connect. 
+`local-machine` part can be omitted (`localhost` is the default). 
+
+If you don't need the session, only the tunnel you can run `ssh` as a background task
+(this will not be a shell background task, so it will not show up in `bg` command):
+{% highlight bash %}
+mac$ ssh -fN -L localhost:5432:localhost:7777 pi
+mac$ ps | grep ssh
+84851 ttys001    0:00.01 grep ssh
+84290 ttys002    0:00.15 ssh pi
+{% endhighlight %}
+
 ### References
 
 * https://www.cyberciti.biz/faq/create-ssh-config-file-on-linux-unix/
 * http://www.trembath.co.za/mctutorial.html
+* https://phoenixnap.com/kb/ssh-port-forwarding
