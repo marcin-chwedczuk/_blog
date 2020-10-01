@@ -203,11 +203,11 @@ mac$ curl localhost:5432
 </html>
 {% endhighlight %}
 The general syntax is `-L local-machine:local-port:remote-machine:remote-port`.
-Notice that for the `remote-machine` we choose `localhost`, but we could e.g.
+Notice that for the `remote-machine` we have chosen `localhost`, but we could e.g.
 chose other computer to which `pi` can connect. 
 `local-machine` part can be omitted (`localhost` is the default). 
 
-If you don't need the session, only the tunnel you can run `ssh` as a background task
+If you don't need the session only the tunnel, you can run `ssh` as a background task
 (this will not be a shell background task, so it will not show up in `bg` command):
 {% highlight bash %}
 mac$ ssh -fN -L localhost:5432:localhost:7777 pi
@@ -215,6 +215,52 @@ mac$ ps | grep ssh
 84851 ttys001    0:00.01 grep ssh
 84290 ttys002    0:00.15 ssh pi
 {% endhighlight %}
+
+Port forwarding can also work in the opposite direction. We may make a service running on
+my laptop accessible on Raspberry PI:
+{% highlight bash %}
+mac$ python3 -m http.server 9999 --bind 127.0.0.1 --directory .
+
+# On PI
+pi$ $ curl localhost:5432
+curl: (7) Failed to connect to localhost port 5432: Connection refused
+
+# On Mac
+mac$ ssh -R localhost:5432:localhost:9999 pi
+pi$ curl localhost:5432
+<html>
+	<head></head>
+	<body>
+		Hello from MacOS!!!
+	</body>
+</html>
+{% endhighlight %}
+Here syntax is `-R remote-machine:remote-port:local-machine:local-port`.
+Connections to `remote-machine:remote-port` are forwarded to `local-machine:local-port`.
+
+By default the open ports are available on `localhost` only (think security!).
+If you want to accept connections from outside, you need to change 
+`GatewayPorts` settings of sshd to `yes` on the server (machine to which you connect to):
+{% highlight bash %}
+pi$ sudo vi /etc/ssh/sshd_config
+pi$ sudo service sshd restart
+{% endhighlight %}
+Now we can make `pi` accept connection from the entire local network and
+forward them to my laptop:
+{% highlight bash %}
+# Establish tunnel
+mac$ ssh -R '*:5432:localhost:9999' pi
+# From my PC
+pc$ curl raspberry_pi:5432
+<html>
+	<head></head>
+	<body>
+		Hello from MacOS!!!
+	</body>
+</html>
+{% endhighlight %}
+TIP: The single quotes are needed to prevent shell expansion of `*`.
+
 
 ### References
 
