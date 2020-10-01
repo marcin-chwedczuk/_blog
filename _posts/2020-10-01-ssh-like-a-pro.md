@@ -261,9 +261,41 @@ pc$ curl raspberry_pi:5432
 {% endhighlight %}
 TIP: The single quotes are needed to prevent shell expansion of `*`.
 
+### Providing internet connection via SSH
+
+Say on your local machine you cannot access e.g. `facebook.com` for some strange reason.
+But you noticed that on a certain server there is no such restriction 
+and you can e.g. use `links` to browse `facebook.com`:
+![Facebook in Links](assets/images/2020-10-01/fcrap.png)
+Since FB does not looks good in `links` you really want something better...
+
+Behold SSH comes to the rescue. By using a dynamic port forwarding we may establish
+SOCKS tunnel to the server:
+{% highlight bash %}
+mac$ ssh -C -D 1080 pi 
+{% endhighlight %}
+`-C` is for compression, `1080` is the standard SOCKS port.
+
+Now we need to configure a browser. Firefox is well known for excellent SOCKS support:
+![SOCKS proxy configuration in Firefox](assets/images/2020-10-01/ff.png)
+And voilà `facebook.com` is working again!
+
+A trick like this was very popular when I was living in a dormitory.
+Our dorm internet connection was very slow, but as CS students we had SSH access
+to a few servers, some of them with very fast internet connections...
+
+### X Forwarding
+
+TODO
+
+### Tmux session manager
+
+TODO
 
 ### References
 
 * https://www.cyberciti.biz/faq/create-ssh-config-file-on-linux-unix/
 * http://www.trembath.co.za/mctutorial.html
 * https://phoenixnap.com/kb/ssh-port-forwarding
+* https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding
+* https://linuxize.com/post/how-to-setup-ssh-socks-tunnel-for-private-browsing/
