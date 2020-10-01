@@ -286,7 +286,33 @@ to a few servers, some of them with very fast internet connections...
 
 ### X Forwarding
 
-TODO
+Here I will explain how to do this on MacOS.
+First we need to install [XQuartz](https://www.xquartz.org/), which is X11
+port for MacOS:
+{% highlight bash %}
+mac$ brew install xquartz
+{% endhighlight %}
+Next we need to start XQuartz.app.
+
+Now we must enable X11 forwarding support on Raspberry PI:
+{% highlight bash %}
+pi$ sudo vi /etc/ssh/sshd_config
+# Set: 
+# X11Forwarding yes
+# X11DisplayOffset 10
+pi$ sudo service sshd restart
+pi$ which xauth # Make sure xauth is installed
+{% endhighlight %}
+
+And finally we can start our X session:
+{% highlight bash %}
+mac$ DISPLAY=:0 ssh -X pi
+pi$ vlc
+{% endhighlight %}
+Now when I typed `vlc` a VLC window should pop up. 
+The resolution isn't great (it would look native if I used port forwarding on Linux), 
+that is due to poor retina support in XQuartz. But still it works:
+![XForwarding in MacOS](assets/images/2020-10-01/vlc.png)
 
 ### Tmux session manager
 
@@ -299,3 +325,4 @@ TODO
 * https://phoenixnap.com/kb/ssh-port-forwarding
 * https://help.ubuntu.com/community/SSH/OpenSSH/PortForwarding
 * https://linuxize.com/post/how-to-setup-ssh-socks-tunnel-for-private-browsing/
+* https://unix.stackexchange.com/a/46748
