@@ -10,7 +10,7 @@
    <link>{{ site.url }}</link>
    <description>{{ site.description }}</description>
    <language>{{ site.language }}</language>
-   <managingEditor> {{ site.author }}</managingEditor>
+   <managingEditor>{{ site.author }}</managingEditor>
    <atom:link href="rss" rel="self" type="application/rss+xml" />
    {{content}}
 </channel>

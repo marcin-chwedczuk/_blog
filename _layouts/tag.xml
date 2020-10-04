@@ -5,14 +5,14 @@ title: nil
 {% for post in page.posts %}
 	<item>
 	  <title>{{ post.title }}</title>
-	  <link>{{ site.baseurl }}{{ post.url }}</link>
+	  <link>{{ site.url }}{{ post.url }}</link>
 	  <author>{{ site.author }}</author>
 	  <pubDate>{{ post.date | date_to_xmlschema }}</pubDate>
-	  <guid>{{ site.baseurl }}{{ post.url }}</guid>
+	  <guid>{{ site.url }}{{ post.url }}</guid>
 	{% if post.excerpt %}
-          <description>{{ post.excerpt | xml_escape }}</description>
-        {% else %}
-          <description>{{ post.content | xml_escape }}</description>
-        {% endif %}
+		<description>{{ post.excerpt | xml_escape }}</description>
+	{% else %}
+		<description>{{ post.content | xml_escape }}</description>
+	{% endif %}
 	</item>
 {% endfor %}
