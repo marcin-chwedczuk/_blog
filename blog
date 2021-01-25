@@ -16,6 +16,8 @@ case "$1" in
     ;;
 
 "publish")
+    echo "building with prod settings..."
+    JEKYLL_ENV=production bundle exec jekyll build
     BLOG_DIR=$(dirname "$0")
     pushd "$BLOG_DIR"
     COMMIT_MESSAGE=$(git log -1 --pretty=%B)
