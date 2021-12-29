@@ -12,10 +12,10 @@ logo: 'assets/images/home.png'
 disqus: true
 ---
 
-iTerm2 is one of the best terminal emulators out there.
+iTerm2 is one of the best terminal emulators for macOS.
 But to appreciate its full power you should know how to
 use it effectively.
-Here are shortcuts that I find indispensible while working with iTerm2.
+Here are shortcuts that I find indispensable while working with iTerm2.
 
 #### Working with panes
 
@@ -27,26 +27,43 @@ Here are shortcuts that I find indispensible while working with iTerm2.
 * `Control + Command + Arrow` - Resize current pane
 * `Command + Shift + Enter` - Maximize current pane / Restore its original size
 
-* `Command + K` - Clear current pane
+* `Command + K` - Clear current pane (this one comes with bash/zsh and also works on Linux)
 
 #### Text editing
 
-* `Control + A` - Move to the line beginning
-* `Control + E` - Move to the line end
+* `Control + A` - Go to the beginning of line
+* `Control + E` - Go to the end of line
 
-Consider enabling "Natural Text Editing" (instructions [here](https://apple.stackexchange.com/a/293988))
+* `Option + Delete` - Delete one world
+* `Command + Delete` - Delete entire line
+
+Consider enabling "Natural Text Editing"
 if you want to use `Option + Left/Right Arrow` for
 one word forward/backward navigation instead of
 awkward `Control+] F` / `Esc F` (Escape followed by F for forward or
 B for backward).
 
-* `Option + Delete` - Delete one world
-* `Command + Delete` - Delete entire line
+##### Enabling Natural Text Editing
+
+Press `Command + ,` to open Preferences dialog:
+![Preferences dialog](assets/images/2020-07-08/prefs.png)
+Go to the Profiles tab.
+
+ Create a copy of your current profile by choosing Other actions... dropdown
+ at the bottom of the profile list and selecting Duplicate profile
+ menu option. Then go to Keys
+-> Presets... and choose "Natural Text Editing":
+![Enable Natural Text Editing](assets/images/2020-07-08/setnte.png)
+Set your newly created profile as Default:
+![Set Default Profile](assets/images/2020-07-08/setdef.png)
+Now your new profile should have a star prior to its name.
 
 #### Scrolling
 
 * `Fn + Shift + Up Arrow` - Page Up
 * `Fn + Shift + Down Arrow` - Page Down
+
+On external keyboard `Shift + Page Up/Down` will work too.
 
 #### Tabs
 
@@ -73,7 +90,24 @@ Then you can use `title foo` to set iTerm2 tab title.
 * `Control + R` - Start history search (fuzzy search)
 * `Control + R` - Move to the next suggestion
 
+[Oh my ZSH](https://github.com/ohmyzsh/ohmyzsh) provides a better history management
+based on up and down arrows. If you don't want to install Oh my ZSH, you may emulate
+this behavior in ZSH by adding these lines to your `.zshrc`:
+```
+# make search up and down work, so partially type and hit up/down to find relevant stuff
+bindkey '^[[A' up-line-or-search                                                
+bindkey '^[[B' down-line-or-search
+```
+(thanks to github.com/ghprince user).
+
+Now you just write the command beginning e.g. `vim ` and then you can cycle though all
+completions based on the command history, using up and down arrows.
+
 #### Other
 
-* `Command + ;` - Open graphical autocomplete menu in iTerm2
+* I highly recommend using ZSH with [Oh my ZSH](https://github.com/ohmyzsh/ohmyzsh) bundle.
+ Check this amazing [post](https://code.joejag.com/2014/why-zsh.html) that summarizes most
+ useful ZSH features.
+* `Command + ,` - Open graphical autocomplete menu in iTerm2
 * Use `open URL` command to open given file in MacOS e.g. `open 'https://google.com'` or `open .` to open current directory in Finder
+* Use `pbcopy` to copy command output to the system clipboard e.g. `echo foo | pbcopy`
